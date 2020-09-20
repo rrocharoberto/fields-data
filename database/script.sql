@@ -1,42 +1,44 @@
 --generated using SQLPowerArchitect model.
 
+
 CREATE TABLE Field (
-                fieldId VARCHAR(50) NOT NULL,
+                field_id VARCHAR(50) NOT NULL,
                 name VARCHAR(50) NOT NULL,
                 created TIMESTAMP NOT NULL,
                 updated TIMESTAMP,
                 countryCode VARCHAR(3) NOT NULL,
-                CONSTRAINT field_pk PRIMARY KEY (fieldId)
+                CONSTRAINT field_pk PRIMARY KEY (field_id)
 );
 
 
 CREATE TABLE Boundary (
-                boundaryId VARCHAR(50) NOT NULL,
+                boundary_id VARCHAR(50) NOT NULL,
                 created TIMESTAMP NOT NULL,
                 updated TIMESTAMP,
-                fieldId VARCHAR(50) NOT NULL,
-                CONSTRAINT boundary_pk PRIMARY KEY (boundaryId)
+                field_fk VARCHAR(50) NOT NULL,
+                CONSTRAINT boundary_pk PRIMARY KEY (boundary_id)
 );
 
 
 CREATE TABLE Coordinate (
-                boundaryId VARCHAR(50) NOT NULL,
+                coordinate_id SERIAL NOT NULL,
                 latitude NUMERIC(23,20) NOT NULL,
                 longitude NUMERIC(23,20) NOT NULL,
-                CONSTRAINT coordinate_pk PRIMARY KEY (boundaryId)
+                boundary_fk VARCHAR(50) NOT NULL,
+                CONSTRAINT coordinate_pk PRIMARY KEY (coordinate_id)
 );
 
 
 ALTER TABLE Boundary ADD CONSTRAINT field_boundary_fk
-FOREIGN KEY (fieldId)
-REFERENCES Field (fieldId)
+FOREIGN KEY (field_fk)
+REFERENCES Field (field_id)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-ALTER TABLE Coordinate ADD CONSTRAINT boundary_coordinates_fk
-FOREIGN KEY (boundaryId)
-REFERENCES Boundary (boundaryId)
+ALTER TABLE Coordinate ADD CONSTRAINT boundary_coordinate_fk
+FOREIGN KEY (boundary_fk)
+REFERENCES Boundary (boundary_id)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;

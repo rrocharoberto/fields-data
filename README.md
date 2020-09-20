@@ -150,11 +150,11 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 3) Regards to database model (created using SQLPowerArchitect tool):
 
-	3.1) It's not necessary defined one table for each JSON message level (see [physical model](docs/dbPhysicalModel.pdf).
+	3.1) It's not necessary define one table for each JSON message level (see [physical model](docs/dbPhysicalModel.pdf).
 
 	3.2) For simplifying the design, the properties field is not mapped to the database yet (it is recursively).
 
-	3.3) The "geoJson" and its children nodes (from JSON) will be mixed and stored in only one table (Coordinates). This table supports only one "coordinates" object (from JSON). The type attributes will be mapped only inside the source code (as constants).
+	3.3) The "geoJson" and its children nodes (from JSON) will be mixed and stored in only one table (Coordinates). This table supports only one "coordinates" object (from JSON). The type attributes will be mapped only inside the source code (as constants). Coordinates of a hole is not supported (different of rfc7946).
 
 	3.4) The tables Field and Boundary was created in order to separate their specific data and this approach can support future multiple boundaries for a field.
 
@@ -189,10 +189,6 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 	5.3) For running in `dev` environment, setup the PostgreSQL database using the files to [configure the database](database/configureDatabase.sql) and [create the tables](database/script.sql).
 
 	5.4) 
-
-	5.5) 
-
-	5.6) 
 
 
 
