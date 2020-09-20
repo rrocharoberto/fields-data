@@ -45,7 +45,10 @@ The solution has three specific nodes:
 
 - one external component (OpenWeather Agro Monitoring)
 
-Please refer to this [TODO: architectural diagram](docs/Architecture.png) for a visual representation.
+Please refer to this [architectural diagram](docs/Architecture.png) for a high level visual representation.
+
+Please refer to this [class diagram](docs/JsonClassModel.png) for a structure representing the JSON message.
+
 
 ## Java Project
 
@@ -57,15 +60,18 @@ Please refer to this [TODO: architectural diagram](docs/Architecture.png) for a 
 
 - Uses SpringBoot to easily publish the project in a web container.
 
+
 ## Database
 
 - Contains the tables to persist the data used in the application.
 
-Please refer to this [TODO: physical model](docs/dbPhysicalModel.pdf) for a database relational specification.
+Please refer to this [physical model](docs/dbPhysicalModel.pdf) for a database relational specification.
 
 ## OpenWeather Agro Monitoring
 
 - Provides the information of weather history for a specified field, using it's polygon.
+
+
 
 # Development Environment
 
@@ -80,6 +86,9 @@ The docker containers uses the following tools:
 - Apache Tomcat (with Java - OpenJDK 11
 )
 - PostgreSQL 12
+
+
+
 
 # Building process
 
@@ -141,7 +150,7 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 3) Regards to database model (created using SQLPowerArchitect tool):
 
-	3.1) It's not necessary defined one table for each JSON message level (see [TODO: physical model](docs/dbPhysicalModel.pdf).
+	3.1) It's not necessary defined one table for each JSON message level (see [physical model](docs/dbPhysicalModel.pdf).
 
 	3.2) For simplifying the design, the properties field is not mapped to the database yet (it is recursively).
 
@@ -160,11 +169,11 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	4.1) The JSON fields: "id",  "name", "countryCode", "bounderies", "geoJson", "geometry", "type" (geoJson and geometry), "coordinates" are mandatory.
 
-	4.2) "properties" is optional
+	4.2) "properties" is optional (and will not handled now).
 
 	4.3) Only the node "coordinates" won't be validated.
 
-	4.4) Only geometry type Polygon (from rfc7946) will be accepted and persisted.
+	4.4) Only geometry type "Polygon" (from rfc7946) will be accepted and persisted.
 
 	4.5) Field "bounderies" has different spelling.
 
