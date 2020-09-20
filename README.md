@@ -180,6 +180,21 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 	4.6) The first implementation will support only exterior ring for coordinates.
 
 
+5) Regards to Java project:
+
+	5.1) The base project was created using [Spring Initializr](https://start.spring.io) (Spring Boot v2.3.4), with the following dependencies: Spring Web, DevTools, Data JPA and PostgreSQL Driver.
+
+	5.2) The database script was generated using SQLPowerArchitect model.
+
+	5.3) For running in `dev` environment, setup the PostgreSQL database using the files to [configure the database](database/configureDatabase.sql) and [create the tables](database/script.sql).
+
+	5.4) 
+
+	5.5) 
+
+	5.6) 
+
+
 
 
 
