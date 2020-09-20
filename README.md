@@ -45,7 +45,7 @@ The solution has three specific nodes:
 
 - one external component (OpenWeather Agro Monitoring)
 
-Please refer to this [TODO: architectural diagram](docs/architecture.png) for a visual representation.
+Please refer to this [TODO: architectural diagram](docs/Architecture.png) for a visual representation.
 
 ## Java Project
 
@@ -61,7 +61,7 @@ Please refer to this [TODO: architectural diagram](docs/architecture.png) for a 
 
 - Contains the tables to persist the data used in the application.
 
-Please refer to this [TODO: physical model](docs/dbPhysicalModel.png) for a database relational specification.
+Please refer to this [TODO: physical model](docs/dbPhysicalModel.pdf) for a database relational specification.
 
 ## OpenWeather Agro Monitoring
 
@@ -137,5 +137,44 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 1) Create issues on Github to manage the tasks of the project.
 
 2) Create a `docs` directory to keep the specific documentation files.
+
+
+3) Regards to database model (created using SQLPowerArchitect tool):
+
+	3.1) It's not necessary defined one table for each JSON message level (see [TODO: physical model](docs/dbPhysicalModel.pdf).
+
+	3.2) For simplifying the design, the properties field is not mapped to the database yet (it is recursively).
+
+	3.3) The "geoJson" and its children nodes (from JSON) will be mixed and stored in only one table (Coordinates). This table supports only one "coordinates" object (from JSON). The type attributes will be mapped only inside the source code (as constants).
+
+	3.4) The tables Field and Boundary was created in order to separate their specific data and this approach can support future multiple boundaries for a field.
+
+	3.5) The table Coordinate manages only coordinate data.
+
+	3.6) Precision of the following fields: Field id, Field name, Boundary id, Country code, latitude and longitude: (TODO: needs review based on Daniel's email)
+
+[//]: # (latitude and longitude will support 3 integer digits and 20 decimal digits)
+
+
+4) Regards to JSON validation:
+
+	4.1) The JSON fields: "id",  "name", "countryCode", "bounderies", "geoJson", "geometry", "type" (geoJson and geometry), "coordinates" are mandatory.
+
+	4.2) "properties" is optional
+
+	4.3) Only the node "coordinates" won't be validated.
+
+	4.4) Only geometry type Polygon (from rfc7946) will be accepted and persisted.
+
+	4.5) Field "bounderies" has different spelling.
+
+	4.6) The first implementation will support only exterior ring for coordinates.
+
+
+
+
+
+
+
 
 
