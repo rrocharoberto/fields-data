@@ -5,7 +5,7 @@ This project offers a simple rest API to manage fields data and retrieve weather
 
 ## 1) Field managing
 
-A Restful API access through `/fields` endpoint.
+A Rest API access through `/fields` endpoint.
 
 The JSON structure is defined in a private document.
 
@@ -47,7 +47,9 @@ The solution has three specific nodes:
 
 Please refer to this [architectural diagram](docs/Architecture.png) for a high level visual representation.
 
-Please refer to this [class diagram](docs/JsonClassModel.png) for a structure representing the JSON message.
+Please refer to this [JSON class diagram](docs/JsonClassModel.png) for a structure representing the JSON message.
+
+Please refer to this [Rest class diagram](docs/RestClassModel.png) for a structure regards Rest implementation.
 
 
 ## Java Project
@@ -138,7 +140,7 @@ The following GET requests can be made using a web browser or a `curl` command:
 
 PS: change the `localhost` address properly if you are accessing from another machine.
 
-For accessing all resources of the implemented API, use a complete [TODO: Postman collection](docs/fields.postman_collection.json).
+For accessing all resources of the implemented API, use a complete [TODO: Postman collection](docs/Fields.postman_collection.json).
 
 
 # Notes and assumptions
@@ -158,7 +160,7 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	3.4) The tables Field and Boundary was created in order to separate their specific data and this approach can support future multiple boundaries for a field.
 
-	3.5) The table Coordinate manages only coordinate data.
+	3.5) The table Coordinate manages only coordinates data.
 
 	3.6) Precision of the following fields: Field id, Field name, Boundary id, Country code, latitude and longitude: (TODO: needs review based on Daniel's email)
 
@@ -184,11 +186,25 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	5.1) The base project was created using [Spring Initializr](https://start.spring.io) (Spring Boot v2.3.4), with the following dependencies: Spring Web, DevTools, Data JPA and PostgreSQL Driver.
 
-	5.2) The database script was generated using SQLPowerArchitect model.
+	5.2) The database script was generated using SQLPowerArchitect model. The coordinate_id field was changed manually to SERIAL (modeling tool issue).
 
 	5.3) For running in `dev` environment, setup the PostgreSQL database using the files to [configure the database](database/configureDatabase.sql) and [create the tables](database/script.sql).
 
-	5.4) 
+	5.4) Used BigDecimal for latitude and longitude values (double didn't support).
+
+	5.5) Before perform update a field, it cleans up the coordinates of current boundary, because the amount o boundaries may change in the new data.
+
+	5.6) It was created two specific (unchecked) exceptions for handling and sending good format responses in case of some inconsistencies: FieldException and FieldNotFoundException. Unchecked to avoid declaring everywere. Only method handleException(...) in FieldController class handles them properly.
+
+	5.7) Any exception (bellow Exception class) will result in a BAD REQUEST to client. 
+
+	5.8) Implemented GeneralExceptionHandler class to handle any general exceptions.
+
+	5.9) The service class FieldService serves the CRUD operations to the Rest controller.
+
+	5.10) The utility class FieldDataConverter converts JSON to entities objects and vice versa.]
+
+	5.11) The utility class DateUtil converts String to Date objects and vice versa.
 
 
 
