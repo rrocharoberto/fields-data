@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -36,7 +37,7 @@ public class BoundaryEntity implements Serializable {
 	@JoinColumn(name = "FIELD_FK")
 	private FieldEntity field;
 
-	@OneToMany(mappedBy = "boundary", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "boundary", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<CoordinateEntity> coordinates;
 
 	public BoundaryEntity(String id, Date created) {
@@ -87,12 +88,5 @@ public class BoundaryEntity implements Serializable {
 			coordinateEntity.setBoundary(this); // because of CASCADE configuration
 		}
 	}
-
-//		public void addCoordinate(CoordinateEntity coordinate) {
-//			if (coordinate == null) {
-//				coordinates = new ArrayList<CoordinateEntity>();
-//			}
-//			coordinates.add(coordinate);
-//		}
 
 }

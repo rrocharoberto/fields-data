@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -35,8 +36,8 @@ public class FieldEntity implements Serializable {
 	@Column(name = "COUNTRYCODE", nullable = false, length = 3)
 	private String countryCode;
 
-	@OneToOne(mappedBy = "field", cascade = CascadeType.ALL)
-	private BoundaryEntity boundaries;
+	@OneToOne(mappedBy = "field", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private BoundaryEntity boundary;
 
 	public FieldEntity(String id, String name, Date created, String countryCode) {
 		super();
@@ -45,13 +46,6 @@ public class FieldEntity implements Serializable {
 		this.created = created;
 		this.countryCode = countryCode;
 	}
-//
-//	public void addBoundary(BoundaryEntity boundary) {
-//		if (boundaries == null) {
-//			boundaries = new ArrayList<BoundaryEntity>();
-//		}
-//		boundaries.add(boundary);
-//	}
 
 	public String getId() {
 		return id;
@@ -93,12 +87,12 @@ public class FieldEntity implements Serializable {
 		this.countryCode = countryCode;
 	}
 
-	public BoundaryEntity getBoundaries() {
-		return boundaries;
+	public BoundaryEntity getBoundary() {
+		return boundary;
 	}
 
-	public void setBoundaries(BoundaryEntity boundaries) {
-		this.boundaries = boundaries;
+	public void setBoundary(BoundaryEntity boundary) {
+		this.boundary = boundary;
 	}
 
 }

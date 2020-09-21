@@ -8,7 +8,7 @@ public class Field {
 	private String updated;
 	private String countryCode;
 
-	private Boundary bounderies;
+	private Boundary bounderies; // the attribute name is in plural because of JSON specification
 
 	public Field() {
 

@@ -24,7 +24,7 @@ public class CoordinateEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "COORDINATE_ID")
-	private String id;
+	private int id;
 
 	private BigDecimal latitude;
 	private BigDecimal longitude;
@@ -63,8 +63,12 @@ public class CoordinateEntity implements Serializable {
 		this.longitude = longitude;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

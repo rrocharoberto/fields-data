@@ -3,6 +3,7 @@ package com.roberto.field.dto;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.roberto.field.controller.support.FieldNotFoundException;
 
 public class Geometry {
 
@@ -23,6 +24,9 @@ public class Geometry {
 
 	@JsonIgnore
 	public BigDecimal[][] getExteriorGeometry() {
+		if(coordinates == null || coordinates.length == 0) {
+			throw new FieldNotFoundException("No coordinates found.");
+		}
 		return coordinates[exteriorIdx];
 	}
 	
