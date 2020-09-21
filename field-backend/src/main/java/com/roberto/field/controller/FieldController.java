@@ -20,7 +20,9 @@ import com.roberto.field.controller.support.FieldException;
 import com.roberto.field.controller.support.FieldNotFoundException;
 import com.roberto.field.controller.support.ResponseStatus;
 import com.roberto.field.dto.Field;
+import com.roberto.field.dto.heatherHistory.WeatherHistory;
 import com.roberto.field.service.FieldService;
+import com.roberto.field.service.WeatherService;
 
 @RestController
 @RequestMapping("/")
@@ -28,6 +30,9 @@ public class FieldController {
 
 	@Autowired
 	private FieldService service;
+
+	@Autowired
+	private WeatherService weatherService;
 
 	@GetMapping("/fields")
 	public List<Field> getAllFields() {
@@ -52,6 +57,11 @@ public class FieldController {
 	@DeleteMapping("/fields/{fieldId}")
 	public ResponseStatus deleteField(@PathVariable String fieldId) {
 		return service.deleteField(fieldId);
+	}
+	
+	@GetMapping("/fields/{fieldId}/weather")
+	public WeatherHistory retrieveWeatherHistory(@PathVariable String fieldId) {
+		return weatherService.retrieveWeatherHistory(fieldId);
 	}
 
 	/**
