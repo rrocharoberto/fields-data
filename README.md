@@ -45,11 +45,17 @@ The solution has three specific nodes:
 
 - one external component (OpenWeather Agro Monitoring)
 
-Please refer to this [architectural diagram](docs/Architecture.png) for a high level visual representation.
+Please refer to the following diagrams for specific design view:
 
-Please refer to this [JSON class diagram](docs/JsonClassModel.png) for a structure representing the JSON message.
+- [architectural diagram](docs/Architecture.png) for a high level visual representation.
 
-Please refer to this [Rest class diagram](docs/RestClassModel.png) for a structure regards Rest implementation.
+- [JSON class diagram](docs/JsonClassModel.png) for a class structure of JSON field API.
+
+- [Rest class diagram](docs/RestClassModel.png) for a structure regards Rest implementation.
+
+- [History weather process](docs/ReteiveWeatherHistoryProcess.png) for the steps for retrieving the data.
+
+- [History weather class diagram](docs/WeatherHistoryModel.png) for class structure of JSON history weather API.
 
 
 ## Java Project
@@ -182,7 +188,7 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 	4.6) The first implementation will support only exterior ring for coordinates.
 
 
-5) Regards to Java project:
+5) Regards to Java project (CRUD Field API):
 
 	5.1) The base project was created using [Spring Initializr](https://start.spring.io) (Spring Boot v2.3.4), with the following dependencies: Spring Web, DevTools, Data JPA and PostgreSQL Driver.
 
@@ -207,8 +213,15 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 	5.11) The utility class DateUtil converts String to Date objects and vice versa.
 
 
+6) Regards to Java project (Historical Weather API):
 
+	6.1) GeoData and Geometry classes will be reused in Polygon JSON structure.
 
+	6.2) Only "main" data will be mapped to receive data from OpenWeather Agro Monitoring API.
+
+	6.3) appid for polygon API: fedc87646176973e8fa85df97a04f0fc
+
+	6.4) Using the fieldId as name of polygon.
 
 
 
