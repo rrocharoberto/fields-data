@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.roberto.field.controller.support.FieldException;
 import com.roberto.field.controller.support.FieldNotFoundException;
 import com.roberto.field.controller.support.ResponseStatus;
 import com.roberto.field.dao.FieldDAO;
@@ -74,11 +75,11 @@ public class FieldService {
 	public ResponseStatus createField(Field newField) {
 		Optional<FieldEntity> existingField = dao.findById(newField.getId());
 		if (existingField.isPresent()) {
-			throw new FieldNotFoundException("Field already exists with id: " + newField.getId());
+			throw new FieldException("Field already exists with id: " + newField.getId());
 		}
 		BoundaryEntity existingBoundary = dao.findBoundaryById(newField.getBounderies().getId());
 		if (existingBoundary != null) {
-			throw new FieldNotFoundException("Field has already boundary with id: " + newField.getBounderies().getId());
+			throw new FieldException("Field has already boundary with id: " + newField.getBounderies().getId());
 		}
 
 		FieldEntity fieldEntity = convertDTOFieldToEntity(newField);
@@ -140,7 +141,7 @@ public class FieldService {
 
 		Field field = converter.convertFieldEntityToJSON(entity);
 		Boundary boundary = converter.convertBoundaryEntityToJSON(entity.getBoundary());
-		GeoData geoData = converter.convertJSONToCoordinateEntity(entity.getBoundary().getCoordinates());
+		GeoData geoData = converter.convertCoordinateEntityToJSON(entity.getBoundary().getCoordinates());
 
 		field.setBounderies(boundary);
 		boundary.setGeoJson(geoData);

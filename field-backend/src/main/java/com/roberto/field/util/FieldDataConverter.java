@@ -86,7 +86,7 @@ public class FieldDataConverter {
 		return boundary;
 	}
 
-	public GeoData convertJSONToCoordinateEntity(List<CoordinateEntity> coordinateEntities) {
+	public GeoData convertCoordinateEntityToJSON(List<CoordinateEntity> coordinateEntities) {
 		Geometry geometry = new Geometry();
 
 		BigDecimal coordinatesMatrix[][][] = new BigDecimal[1][coordinateEntities.size()][2];
