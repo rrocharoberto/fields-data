@@ -223,7 +223,7 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	6.4) Using the fieldId as name of polygon.
 
-
+	6.5) Added extra dependency `spring-boot-starter-webflux` in order to implement Rest client for polygon and weather history APIs.
 
 
 

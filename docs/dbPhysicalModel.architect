@@ -31,7 +31,7 @@
   <table id="TAB3" populated="true" UUID="f6326c0f-07c7-4fbc-b125-aaf3fb5a1cc0" name="Field" objectType="TABLE" physicalName="Field" >
    <remarks></remarks>
    <folder id="FOLTAB31" populated="true" name="Columns" physicalName="Columns" type="1">
-    <column id="COL4" populated="true" UUID="f5f61431-c4bc-4b7b-9936-633e79fa803f" autoIncrement="false" autoIncrementSequenceName="Field_field_id_seq" defaultValue="" name="field_id" nullable="0" physicalName="field_id" precision="50" primaryKeySeq="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL4" populated="true" UUID="f5f61431-c4bc-4b7b-9936-633e79fa803f" autoIncrement="false" autoIncrementSequenceName="Field_field_id_seq" defaultValue="" name="field_id" nullable="0" physicalName="field_id" precision="36" primaryKeySeq="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
     <column id="COL5" populated="true" UUID="e09e8f8c-98b8-4898-9827-b0e6e4c40e38" autoIncrement="false" autoIncrementSequenceName="Field_name_seq" defaultValue="" name="name" nullable="0" physicalName="name" precision="50" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
@@ -60,7 +60,7 @@
   <table id="TAB11" populated="true" UUID="3899abeb-79cb-4f91-b53d-158abfdab7e0" name="Boundary" objectType="TABLE" physicalName="Boundary" >
    <remarks></remarks>
    <folder id="FOLTAB111" populated="true" name="Columns" physicalName="Columns" type="1">
-    <column id="COL12" populated="true" UUID="10ef1f52-f1a9-4bd2-9720-4a8d14b16325" autoIncrement="false" autoIncrementSequenceName="Boundary_boundary_id_seq" defaultValue="" name="boundary_id" nullable="0" physicalName="boundary_id" precision="50" primaryKeySeq="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL12" populated="true" UUID="10ef1f52-f1a9-4bd2-9720-4a8d14b16325" autoIncrement="false" autoIncrementSequenceName="Boundary_boundary_id_seq" defaultValue="" name="boundary_id" nullable="0" physicalName="boundary_id" precision="36" primaryKeySeq="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
     <column id="COL13" populated="true" UUID="47fcc59a-26e0-480e-abae-d1acb42cf657" autoIncrement="false" autoIncrementSequenceName="Boundary_created_seq" defaultValue="" name="created" nullable="0" physicalName="created" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="93" userDefinedTypeUUID="6497d8de-0e00-40d6-a42e-e2adca83be64" >
@@ -69,7 +69,7 @@
     <column id="COL14" populated="true" UUID="a72b48d7-0f01-4d88-8967-34ad35713078" autoIncrement="false" autoIncrementSequenceName="Boundary_updated_seq" defaultValue="" name="updated" nullable="1" physicalName="updated" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="93" userDefinedTypeUUID="6497d8de-0e00-40d6-a42e-e2adca83be64" >
      <remarks></remarks>
     </column>
-    <column id="COL15" populated="true" UUID="72fc58b7-041b-4e9f-9cdb-d3e0869d1d4b" autoIncrement="false" autoIncrementSequenceName="Field_id_seq" defaultValue="" name="field_fk" nullable="0" physicalName="field_fk" precision="50" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL15" populated="true" UUID="72fc58b7-041b-4e9f-9cdb-d3e0869d1d4b" autoIncrement="false" autoIncrementSequenceName="Field_id_seq" defaultValue="" name="field_fk" nullable="0" physicalName="field_fk" precision="36" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
     </folder>
@@ -95,7 +95,7 @@
     <column id="COL21" populated="true" UUID="0d299dae-c2df-4c0f-8a55-747d153d430a" autoIncrement="false" autoIncrementSequenceName="Coordinate_longitude_seq" defaultValue="" name="longitude" nullable="0" physicalName="longitude" precision="23" referenceCount="1" scale="20" sourceDataTypeName="UserDefinedSQLType" type="2" userDefinedTypeUUID="115245ce-612c-4d6a-b559-6dd903dd959a" >
      <remarks></remarks>
     </column>
-    <column id="COL22" populated="true" UUID="f684af00-035d-474d-abbf-53ca1b006900" autoIncrement="false" autoIncrementSequenceName="Boundary_boundary_fk_seq" defaultValue="" name="boundary_fk" nullable="0" physicalName="boundary_fk" precision="50" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL22" populated="true" UUID="f684af00-035d-474d-abbf-53ca1b006900" autoIncrement="false" autoIncrementSequenceName="Boundary_boundary_fk_seq" defaultValue="" name="boundary_fk" nullable="0" physicalName="boundary_fk" precision="36" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
     </folder>
@@ -110,15 +110,15 @@
    </folder>
   </table>
   <relationships>
-   <relationship id="REL25" populated="true" UUID="8bf61de7-f674-4d5b-849d-ff7a08c1fafd" deferrability="7" deleteRule="3" fk-table-ref="TAB11" fkCardinality="7" identifying="false" name="Field_Boundary_fk" physicalName="field_boundary_fk" pk-table-ref="TAB3" pkCardinality="2" updateRule="3" >
+   <relationship id="REL25" populated="true" UUID="8bf61de7-f674-4d5b-849d-ff7a08c1fafd" deferrability="7" deleteRule="3" fk-table-ref="TAB11" fkCardinality="7" identifying="false" name="Field_Boundary_fk" physicalName="Field_Boundary_fk" pk-table-ref="TAB3" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP26" populated="true" UUID="844072b4-ec6a-4d5f-987a-b08e644ca2b9" fk-column-ref="COL15" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL4" />
    </relationship>
-   <relationship id="REL27" populated="true" UUID="a751a4a9-ef29-4691-869c-86898e7aa187" deferrability="7" deleteRule="3" fk-table-ref="TAB18" fkCardinality="7" identifying="false" name="Boundary_Coordinate_fk" physicalName="boundary_coordinate_fk" pk-table-ref="TAB11" pkCardinality="2" updateRule="3" >
+   <relationship id="REL27" populated="true" UUID="a751a4a9-ef29-4691-869c-86898e7aa187" deferrability="7" deleteRule="3" fk-table-ref="TAB18" fkCardinality="7" identifying="false" name="Boundary_Coordinate_fk" physicalName="Boundary_Coordinate_fk" pk-table-ref="TAB11" pkCardinality="2" updateRule="3" >
     <column-mapping id="CMP28" populated="true" UUID="b34be7d8-6414-4187-8238-359a00012abd" fk-column-ref="COL22" name="Column Mapping" physicalName="Column Mapping" pk-column-ref="COL12" />
    </relationship>
   </relationships>
  </target-database>
- <ddl-generator type="ca.sqlpower.architect.ddl.PostgresDDLGenerator" allow-connection="false" target-schema="public"> </ddl-generator>
+ <ddl-generator type="ca.sqlpower.architect.ddl.PostgresDDLGenerator" allow-connection="true" target-schema="public"> </ddl-generator>
  <liquibase-settings useSeparateChangeSets="false" generateId="false" idStart="1"/>
  <create-kettle-job-settings filePath="" jobName="" schemaName="" kettleJoinType="0" savingToFile="true" />
  <play-pen zoom="1.0" viewportX="0" viewportY="0" relationship-style="rectilinear" names-displayLogicalNames="true" showPrimaryTag="true" showForeignTag="true" showAlternateTag="true" columnVisibility="ALL" relationshipLabelVisibility="true">
