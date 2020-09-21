@@ -115,9 +115,6 @@ public class WeatherService {
 						.concat("&start=").concat(getNow())
 						.concat("&end=").concat(getSevenDaysBehind());
 		
-		//TODO: remove this hard coded URL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//url = "https://samples.openweathermap.org/agro/1.0/weather/history?polyid=5aaa8052cbbbb5000b73ff66&start=1485703465&end=1485780512&&appid=bb0664ed43c153aa072c760594d775a7";
-
 		logger.info(url);
 
 		List<HistoricalWeatherData> list = WebClient.create(url)
@@ -144,10 +141,10 @@ public class WeatherService {
 
 	private ExchangeFilterFunction logRequest() {
 		return (clientRequest, next) -> {
-			logger.info("Request: {} {}", clientRequest.method(), clientRequest.url());
+			logger.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
 			
 			clientRequest.headers().forEach((name, values) -> values.forEach(value -> logger.info("{}={}", name, value)));
-			logger.info("Body: ", clientRequest.body());
+			logger.debug("Body: ", clientRequest.body());
 			return next.exchange(clientRequest);
 		};
 	}
@@ -155,7 +152,7 @@ public class WeatherService {
 	private ExchangeFilterFunction logResponse() {
 		return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
 			
-			logger.info("Response: {}", clientResponse.headers().asHttpHeaders().get("property-header"));
+			logger.debug("Response: {}", clientResponse.headers().asHttpHeaders().get("property-header"));
 			
 			return Mono.just(clientResponse);
 		});

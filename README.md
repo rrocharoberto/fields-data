@@ -221,9 +221,17 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	6.3) appid for polygon API: fedc87646176973e8fa85df97a04f0fc
 
-	6.4) Using the fieldId as name of polygon.
+	6.4) Using the fieldId as name of polygon (in PolygonDataRequest).
 
 	6.5) Added extra dependency `spring-boot-starter-webflux` in order to implement Rest client for polygon and weather history APIs.
+
+	6.6) Oficial API of weather history gives unauthorized error. Using sample API (as answered by Daniel) for tests.
+
+	6.7) Note: the data in response from weather history (using sample API) are only samples (they are not compatible with the dates used to query it). [Example used](https://samples.openweathermap.org/agro/1.0/weather/history?appid=fedc87646176973e8fa85df97a04f0fc&polyid=5f69118a714b526842e124ff&start=1600710398&end=1600191998)
+
+	6.8) Change property `historical.weather.rest.url` in file `/field-backend/src/main/resources/application.properties` to configure the weather history API properly.
+
+
 
 
 
