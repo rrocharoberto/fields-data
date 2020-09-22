@@ -212,6 +212,8 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	5.11) The utility class DateUtil converts String to Date objects and vice versa.
 
+	5.12) In FieldEntity: created is set only when field is persisted to database. updated is set every time update is performed.
+
 
 6) Regards to Java project (Historical Weather API):
 
@@ -219,7 +221,7 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	6.2) Only "main" data will be mapped to receive data from OpenWeather Agro Monitoring API.
 
-	6.3) appid for polygon API: fedc87646176973e8fa85df97a04f0fc
+	6.3) appid for polygon API is stored in application.properties file.
 
 	6.4) Using the fieldId as name of polygon (in PolygonDataRequest).
 

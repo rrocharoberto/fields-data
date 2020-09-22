@@ -11,6 +11,11 @@ public class WeatherHistoryConverter {
 	public WeatherHistoryConverter() {
 	}
 
+	/**
+	 * Converts HistoricalWeatherData objects to WeatherHistory object.
+	 * @param historicalWeather
+	 * @return
+	 */
 	public WeatherHistory convertHistoricalWeatherToJSON(List<HistoricalWeatherData> historicalWeather) {
 
 		WeatherData[] weatherDataArray = new WeatherData[historicalWeather.size()];

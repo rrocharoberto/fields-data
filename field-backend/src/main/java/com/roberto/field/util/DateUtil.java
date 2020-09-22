@@ -2,10 +2,17 @@ package com.roberto.field.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import com.roberto.field.controller.support.FieldException;
 
+/**
+ * Utility class to handle dates.
+ * @author roberto
+ *
+ */
 public class DateUtil {
 
 	// Example: "2020-07-25T10:03:56.782Z"
@@ -30,4 +37,17 @@ public class DateUtil {
 			throw new FieldException("Invalid date format: " + dateSource);
 		}
 	}
+	
+	public static String getNow() {
+		LocalDateTime now = LocalDateTime.now();
+				
+		return Long.toString(now.toEpochSecond(ZoneOffset.UTC));
+	}
+	
+	public static String getSevenDaysBehind() {
+		LocalDateTime sevenDaysBehind = LocalDateTime.now().minusDays(6);
+		
+		return Long.toString(sevenDaysBehind.toEpochSecond(ZoneOffset.UTC));
+	}
+
 }

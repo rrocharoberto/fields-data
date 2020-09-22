@@ -1,6 +1,7 @@
 package com.roberto.field.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ import com.roberto.field.entities.FieldEntity;
 import com.roberto.field.util.FieldDataConverter;
 
 /**
- * Provides the CRUD operations for Rest API.
+ * Provides the CRUD operations for field Rest API.
  * 
  * @author roberto
  *
@@ -50,7 +51,7 @@ public class FieldService {
 	}
 
 	/**
-	 * Retrieve a specific field.
+	 * Retrieve a specific field by it's id.
 	 * 
 	 * @param fieldId
 	 * @return
@@ -83,6 +84,7 @@ public class FieldService {
 		}
 
 		FieldEntity fieldEntity = convertDTOFieldToEntity(newField);
+		fieldEntity.setCreated(new Date()); //set every only when the field is created
 		dao.save(fieldEntity);
 		return ResponseStatus.success("Field created successfully.");
 	}
@@ -103,6 +105,7 @@ public class FieldService {
 		}
 		dao.deleteCoodinatesOfBoundary(fieldEntity.getBoundary().getId()); // cleans up the coordinates of current
 																			// boundary
+		fieldEntity.setUpdated(new Date()); //set every time update is performed
 		dao.save(fieldEntity);
 		return ResponseStatus.success("Field updated successfully.");
 	}

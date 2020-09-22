@@ -24,6 +24,21 @@ import com.roberto.field.dto.heatherHistory.WeatherHistory;
 import com.roberto.field.service.FieldService;
 import com.roberto.field.service.WeatherService;
 
+/**
+ * Performs CRUD operations in endpoint: /fields
+ * 
+ * Create: POST on /fields
+ * Retrieve one resource: GET on /fields/{fieldId}
+ * Retrieve all resources: GET  on /fields
+ * Update: PUT  on /fields/{fieldId}
+ * Delete: DELETE on  on /fields/{fieldId}
+ * 
+ * 
+ * Retrieves Weather History of a field in endpoint: GET /fields/{fieldId}/weather
+ * 
+ * @author roberto
+ *
+ */
 @RestController
 @RequestMapping("/")
 public class FieldController {

@@ -22,6 +22,11 @@ public class FieldDataConverter {
 	public FieldDataConverter() {
 	}
 
+	/**
+	 * Converts JSON field object to FieldEntity object.
+	 * @param field
+	 * @return
+	 */
 	public FieldEntity convertJSONToFieldEntity(Field field) {
 		if (field.getId() == null) {
 			throw new FieldNotFoundException("Field with null id.");
@@ -33,13 +38,16 @@ public class FieldDataConverter {
 			throw new FieldNotFoundException("Field with null country code.");
 		}
 
-		// TODO: waiting Daniel's email about created and updated
-		// TODO: new Date() in update won't work properly.
-		FieldEntity entity = new FieldEntity(field.getId(), field.getName(), new Date(), field.getCountryCode());
+		FieldEntity entity = new FieldEntity(field.getId(), field.getName(), field.getCountryCode());
 
 		return entity;
 	}
 
+	/**
+	 * Converts JSON boundary object to BoundaryEntity object.
+	 * @param boundary
+	 * @return
+	 */
 	public BoundaryEntity convertJSONToBoundaryEntity(Boundary boundary) {
 
 		if (boundary.getId() == null) {
@@ -51,6 +59,11 @@ public class FieldDataConverter {
 		return entity;
 	}
 
+	/**
+	 * Converts JSON boundary object to a list of CoordinateEntity objects.
+	 * @param boundary
+	 * @return
+	 */
 	public List<CoordinateEntity> convertJSONToCoordinateEntity(Boundary boundary) {
 
 		List<CoordinateEntity> coordinates = new ArrayList<CoordinateEntity>();

@@ -29,9 +29,9 @@ public class FieldEntity implements Serializable {
 	private String name;
 
 	@Column(name = "CREATED", nullable = false, length = 50)
-	private Date created;
+	private Date created; //set only when field is persisted to database
 
-	private Date updated;
+	private Date updated; //set every time update is performed
 
 	@Column(name = "COUNTRYCODE", nullable = false, length = 3)
 	private String countryCode;
@@ -39,11 +39,10 @@ public class FieldEntity implements Serializable {
 	@OneToOne(mappedBy = "field", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private BoundaryEntity boundary;
 
-	public FieldEntity(String id, String name, Date created, String countryCode) {
+	public FieldEntity(String id, String name, String countryCode) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.created = created;
 		this.countryCode = countryCode;
 	}
 

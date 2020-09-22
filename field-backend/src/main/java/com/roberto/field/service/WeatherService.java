@@ -1,7 +1,5 @@
 package com.roberto.field.service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,12 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyExtractor;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.http.ReactiveHttpInputMessage;
 
-
+import com.roberto.field.controller.support.FieldException;
 import com.roberto.field.controller.support.FieldNotFoundException;
 import com.roberto.field.dao.FieldDAO;
 import com.roberto.field.dto.GeoData;
@@ -26,13 +21,14 @@ import com.roberto.field.dto.heatherHistory.PolygonDataRequest;
 import com.roberto.field.dto.heatherHistory.PolygonDataResponse;
 import com.roberto.field.dto.heatherHistory.WeatherHistory;
 import com.roberto.field.entities.FieldEntity;
+import com.roberto.field.util.DateUtil;
 import com.roberto.field.util.FieldDataConverter;
 import com.roberto.field.util.WeatherHistoryConverter;
 
 import reactor.core.publisher.Mono;
 
 /**
- * Provides the CRUD operations for Rest API.
+ * Retrieves the weather historical data from external API.
  * 
  * @author roberto
  *
@@ -40,14 +36,10 @@ import reactor.core.publisher.Mono;
 @Service
 public class WeatherService {
 
-	Logger logger = LoggerFactory.getLogger(WeatherService.class);
+	private Logger logger = LoggerFactory.getLogger(WeatherService.class);
 	
-	// http://api.agromonitoring.com/agro/1.0/polygons?appid={appid}
 	private String polygonAPIURL;
-	
-	//http://api.agromonitoring.com/agro/1.0/weather/history?polyid={polygonId}&appid={appId}&start={startPeriod}&end={endPeriod}
 	private String historicalWeatherAPIURL;
-
 	private String appId;
 
 	@Autowired
@@ -66,10 +58,24 @@ public class WeatherService {
 		this.appId = theAppId;
 	}
 
+	/**
+	 * Main business logic for retrieving weather history from OpenWeather Agro Monitoring API
+	 * Steps:
+	 * 1) retrieve field from database
+	 * 2) convert field coordinates to geoJson
+	 * 3) prepare polygon request
+	 * 4) perform polygon create at OpenWeather API
+	 * 5) retrieve weather history from OpenWeather API
+	 * 6) convert to WeatherHistory internal format.
+	 * @param fieldId
+	 * @return
+	 */
 	public WeatherHistory retrieveWeatherHistory(String fieldId) {
-
-		// retrieve field/polygon info from database
-		Optional<FieldEntity> fieldEntity = dao.findById(fieldId);
+		if(fieldId == null) {
+			throw new FieldException("Field can not null.");
+		}
+		
+		Optional<FieldEntity> fieldEntity = dao.findById(fieldId); // retrieve field/polygon info from database
 		if(!fieldEntity.isPresent()) {
 			throw new FieldNotFoundException("Field not found with id: " + fieldId);
 		}
@@ -77,43 +83,60 @@ public class WeatherService {
 		GeoData geoJson = fieldConverter.convertCoordinateEntityToJSON(fieldEntity.get().getBoundary().getCoordinates());
 
 		// create polygon request
-		PolygonDataRequest polygonReq = new PolygonDataRequest();
-		polygonReq.setName(fieldId); // using the fieldId as name of polygon
-		polygonReq.setGeo_json(geoJson);
+		PolygonDataRequest polygonReq = new PolygonDataRequest(fieldId, geoJson); // using the fieldId as name of polygon
 
 		PolygonDataResponse polygonResponse = this.doCreatePolygon(polygonReq);
-		logger.info("Polygon created id: ", polygonResponse.getId());
+		if(polygonResponse == null) {
+			throw new FieldException("No Polygon data received from external API. Field: " + fieldId);
+		}
 		
-		List<HistoricalWeatherData> historicalWeather = getHistoricalWeather(polygonResponse.getId());
+		//TODO: save the polygon id for future requests
 		
-		WeatherHistory weatherData = whConverter.convertHistoricalWeatherToJSON(historicalWeather);
+		List<HistoricalWeatherData> historicalWeather = this.doRetrieveHistoricalWeather(polygonResponse.getId());
+		if(historicalWeather == null) {
+			throw new FieldException("No historical weather data received from external API. Field: " + fieldId);
+		}
 		
-		return weatherData;
+		return whConverter.convertHistoricalWeatherToJSON(historicalWeather);
 	}
 
+	/**
+	 * Perform polygon create at OpenWeather API
+	 * @param polygonReq
+	 * @return
+	 */
 	private PolygonDataResponse doCreatePolygon(PolygonDataRequest polygonReq) {
 		
 		String url = polygonAPIURL + "?" + "appid=" + appId;
 		logger.info(url);
 
-		WebClient webClient = WebClient.builder().baseUrl(url).filter(logRequest()).filter(logResponse())
-				.build();
+		WebClient webClient = WebClient.builder().baseUrl(url).build();
 
-		 PolygonDataResponse response = webClient.post().contentType(MediaType.APPLICATION_JSON)
+		PolygonDataResponse response = webClient.post()
+				.contentType(MediaType.APPLICATION_JSON)
 				.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-				.body(Mono.just(polygonReq), PolygonDataRequest.class).accept(MediaType.APPLICATION_JSON).retrieve()
-				.bodyToFlux(PolygonDataResponse.class).blockFirst();
+				.body(Mono.just(polygonReq), PolygonDataRequest.class)
+				.accept(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.bodyToFlux(PolygonDataResponse.class)
+				.blockFirst();
 
+		logger.info("Polygon created id: ", response.getId());
 		return response;
 	}
 	
-	private List<HistoricalWeatherData> getHistoricalWeather(String polygonId) {
+	/**
+	 * Retrieve weather history from OpenWeather API
+	 * @param polygonId
+	 * @return
+	 */
+	private List<HistoricalWeatherData> doRetrieveHistoricalWeather(String polygonId) {
 		
 		String url = historicalWeatherAPIURL
 						.concat("?appid=").concat(appId)
 						.concat("&polyid=").concat(polygonId)
-						.concat("&start=").concat(getNow())
-						.concat("&end=").concat(getSevenDaysBehind());
+						.concat("&start=").concat(DateUtil.getNow())
+						.concat("&end=").concat(DateUtil.getSevenDaysBehind());
 		
 		logger.info(url);
 
@@ -126,36 +149,6 @@ public class WeatherService {
 		        .log()
 		        .block();
 		return list;
-	}
-	
-	private String getNow() {
-		LocalDateTime now = LocalDateTime.now();
-				
-		return Long.toString(now.toEpochSecond(ZoneOffset.UTC));
-	}
-	private String getSevenDaysBehind() {
-		LocalDateTime sevenDaysBehind = LocalDateTime.now().minusDays(6);
-		
-		return Long.toString(sevenDaysBehind.toEpochSecond(ZoneOffset.UTC));
-	}
-
-	private ExchangeFilterFunction logRequest() {
-		return (clientRequest, next) -> {
-			logger.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
-			
-			clientRequest.headers().forEach((name, values) -> values.forEach(value -> logger.info("{}={}", name, value)));
-			logger.debug("Body: ", clientRequest.body());
-			return next.exchange(clientRequest);
-		};
-	}
-
-	private ExchangeFilterFunction logResponse() {
-		return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-			
-			logger.debug("Response: {}", clientResponse.headers().asHttpHeaders().get("property-header"));
-			
-			return Mono.just(clientResponse);
-		});
 	}
 
 }
