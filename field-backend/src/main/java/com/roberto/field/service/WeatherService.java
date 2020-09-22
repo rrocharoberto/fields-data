@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.roberto.field.controller.support.FieldAPIException;
 import com.roberto.field.controller.support.FieldException;
 import com.roberto.field.controller.support.FieldNotFoundException;
 import com.roberto.field.dao.FieldDAO;
@@ -110,19 +111,23 @@ public class WeatherService {
 		String url = polygonAPIURL + "?" + "appid=" + appId;
 		logger.info(url);
 
-		WebClient webClient = WebClient.builder().baseUrl(url).build();
-
-		PolygonDataResponse response = webClient.post()
-				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-				.body(Mono.just(polygonReq), PolygonDataRequest.class)
-				.accept(MediaType.APPLICATION_JSON)
-				.retrieve()
-				.bodyToFlux(PolygonDataResponse.class)
-				.blockFirst();
-
-		logger.info("Polygon created id: ", response.getId());
-		return response;
+		try { 
+			WebClient webClient = WebClient.builder().baseUrl(url).build();
+	
+			PolygonDataResponse response = webClient.post()
+					.contentType(MediaType.APPLICATION_JSON)
+					.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+					.body(Mono.just(polygonReq), PolygonDataRequest.class)
+					.accept(MediaType.APPLICATION_JSON)
+					.retrieve()
+					.bodyToFlux(PolygonDataResponse.class)
+					.blockFirst();
+	
+			logger.info("Polygon created id: ", response.getId());
+			return response;
+		} catch (Exception ex) {
+			throw new FieldAPIException(ex);
+		}
 	}
 	
 	/**
@@ -140,15 +145,19 @@ public class WeatherService {
 		
 		logger.info(url);
 
-		List<HistoricalWeatherData> list = WebClient.create(url)
-		        .get()
-		        .accept(MediaType.APPLICATION_JSON)
-		        .retrieve()
-		        .bodyToFlux(HistoricalWeatherData.class)
-		        .collectList()
-		        .log()
-		        .block();
-		return list;
+		try {
+			List<HistoricalWeatherData> list = WebClient.create(url)
+			        .get()
+			        .accept(MediaType.APPLICATION_JSON)
+			        .retrieve()
+			        .bodyToFlux(HistoricalWeatherData.class)
+			        .collectList()
+			        .log()
+			        .block();
+			return list;
+		} catch (Exception ex) {
+			throw new FieldAPIException(ex);
+		}
 	}
 
 }

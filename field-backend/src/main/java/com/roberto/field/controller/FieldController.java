@@ -103,9 +103,9 @@ public class FieldController {
 	public ResponseEntity<FieldErrorMessage> handleException(FieldNotFoundException ex) {
 
 		FieldErrorMessage error = new FieldErrorMessage(
-				HttpStatus.BAD_REQUEST.value(), 
+				HttpStatus.NOT_FOUND.value(), 
 				ex.getMessage());
 		
-		return new ResponseEntity<FieldErrorMessage>(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<FieldErrorMessage>(error, HttpStatus.NOT_FOUND);
 	}
 }

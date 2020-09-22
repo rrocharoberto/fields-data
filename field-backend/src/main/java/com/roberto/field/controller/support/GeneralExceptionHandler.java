@@ -22,9 +22,20 @@ public class GeneralExceptionHandler {
 		ex.printStackTrace();
 		
 		FieldErrorMessage error = new FieldErrorMessage(
-				HttpStatus.BAD_REQUEST.value(),
+				HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				ex.getMessage());
 		
-		return new ResponseEntity<FieldErrorMessage>(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<FieldErrorMessage>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler
+	public ResponseEntity<FieldErrorMessage> handleException(FieldAPIException ex) {
+		ex.printStackTrace();
+		
+		FieldErrorMessage error = new FieldErrorMessage(
+				HttpStatus.BAD_GATEWAY.value(),
+				ex.getMessage());
+		
+		return new ResponseEntity<FieldErrorMessage>(error, HttpStatus.BAD_GATEWAY);
 	}
 }

@@ -233,7 +233,7 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	6.8) Change property `historical.weather.rest.url` in file `/field-backend/src/main/resources/application.properties` to configure the weather history API properly.
 
-
+	6.9) Catching exceptions when retrieving data from OpenWeather API and handling it as FieldAPIException (for bad gateway response).
 
 
 
