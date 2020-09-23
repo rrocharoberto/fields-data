@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.roberto.field.controller.support.FieldException;
 import com.roberto.field.controller.support.FieldNotFoundException;
-import com.roberto.field.controller.support.ResponseStatus;
 import com.roberto.field.dao.FieldDAO;
 import com.roberto.field.dto.Boundary;
 import com.roberto.field.dto.Field;
@@ -73,7 +72,7 @@ public class FieldService {
 	 * @param newField
 	 * @return
 	 */
-	public ResponseStatus createField(Field newField) {
+	public void createField(Field newField) {
 		Optional<FieldEntity> existingField = dao.findById(newField.getId());
 		if (existingField.isPresent()) {
 			throw new FieldException("Field already exists with id: " + newField.getId());
@@ -86,7 +85,7 @@ public class FieldService {
 		FieldEntity fieldEntity = convertDTOFieldToEntity(newField);
 		fieldEntity.setCreated(new Date()); //set every only when the field is created
 		dao.save(fieldEntity);
-		return ResponseStatus.success("Field created successfully.");
+//		return ResponseStatus.success("Field created successfully.");
 	}
 
 	/**
@@ -96,7 +95,7 @@ public class FieldService {
 	 * @param theField
 	 * @return
 	 */
-	public ResponseStatus updateField(String fieldId, Field theField) {
+	public Field updateField(String fieldId, Field theField) {
 		FieldEntity fieldEntity = convertDTOFieldToEntity(theField);
 
 		Optional<FieldEntity> existingField = dao.findById(fieldId);
@@ -107,7 +106,8 @@ public class FieldService {
 																			// boundary
 		fieldEntity.setUpdated(new Date()); //set every time update is performed
 		dao.save(fieldEntity);
-		return ResponseStatus.success("Field updated successfully.");
+		//return ResponseStatus.success("Field updated successfully.");
+		return theField;
 	}
 
 	/**
@@ -116,13 +116,15 @@ public class FieldService {
 	 * @param fieldId
 	 * @return
 	 */
-	public ResponseStatus deleteField(String fieldId) {
+	public Field deleteField(String fieldId) {
 		Optional<FieldEntity> existingField = dao.findById(fieldId);
 		if (!existingField.isPresent()) {
 			throw new FieldNotFoundException("Error deleting field: " + fieldId + ". No field found.");
 		}
 		dao.deleteById(fieldId);
-		return ResponseStatus.success("Field deleted successfully.");
+		//return ResponseStatus.success("Field deleted successfully.");
+		Field field = converter.convertFieldEntityToJSON(existingField.get());
+		return field;
 	}
 
 	/**

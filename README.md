@@ -279,5 +279,13 @@ For accessing all resources of the implemented APIs, use a complete this [Postma
 
 
 
+8) Tests
+
+	8.1) Integration test (create and retrieve fields) are defined in FieldBackendApplicationTests class.
+
+	8.2) Unit test of weather history service is defined in WeatherServiceTests class. 
+
+	8.3) Unit test uses Mockito to mock FieldDAO and WeatherServiceDataRetriever. Methods mocked findById(...), doCreatePolygon(...) and doRetrieveHistoricalWeather(...).
+
 
 
