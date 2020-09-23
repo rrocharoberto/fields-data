@@ -1,9 +1,9 @@
 # fields-data
-This project offers a simple rest API to manage fields data and retrieve weather history of a field.
+This project offers a simple rest API to manage fields data and retrieve weather history of fields.
 
-# System Requirements
+# Rest API Requirements
 
-## 1) Field managing
+## 1) Field management
 
 A Rest API access through `/fields` endpoint.
 
@@ -47,7 +47,7 @@ The solution has three specific nodes:
 
 Please refer to the following diagrams for specific design view:
 
-- [architectural diagram](docs/Architecture.png) for a high level visual representation.
+- [Architectural diagram](docs/Architecture.png) for a high level visual representation.
 
 - [JSON class diagram](docs/JsonClassModel.png) for a class structure of JSON field API.
 
@@ -91,8 +91,7 @@ This project uses this tools:
 
 The docker containers uses the following tools:
 
-- Apache Tomcat (with Java - OpenJDK 11
-)
+- OpenJDK 11
 - PostgreSQL 12
 
 
@@ -102,36 +101,66 @@ The docker containers uses the following tools:
 
 ## Build backend project
 
-TODO: describe it
+In order to build the project, execute the following command inside the `field-backend` directory:
 
-## Create the backend docker image `backend-fields`
+`mvn clean install`
 
-TODO: describe it
+## Create the backend Docker image `backend-fields`
+
+In order to build the Docker image of Spring application, execute the following command inside the `field-backend` directory:
+
+`docker build --build-arg DB_PASSWORD=$DB_PASSWORD --build-arg WHEATHER_APPID=$WHEATHER_APPID -t backend-fields .`
+
+Change `$DB_PASSWORD` to your own database password and and `$WHEATHER_APPID` to your appid from OpenWeather API.
 
 
 ## Create the database image `db-fields`
 
-TODO: describe it
+In order to build the Docker image of database, execute the following command inside the `database` directory:
 
+`docker build --build-arg DB_PASSWORD=$DB_PASSWORD -t db-fields .`
+
+Change `$DB_PASSWORD` to your own database password.
+
+TODO: configure volumes: 
+
+-v ${HOME}/postgres-data/:/var/lib/postgresql/data
+
+-d --volumes-from PostgresData
+
+docker create -v /var/lib/postgresql/data --name PostgresData alpine
+ 
 
 # Running process
 
-TODO: describe it
+This section describes how to run the application using the Docker container environment.
 
 
-### Create the docker network
+### Configure the Docker network
 
-TODO: describe it
+`docker network create fields-net`
 
 
 ### Run the database container
 
-TODO: describe it
+`docker container run -d --rm -p 5433:5432 --network fields-net --name fields-dbserver db-fields`
 
+PS: external port was changed to avoid conflict with default PostgreSQL instance.
 
 ### Run the backend application container
 
-TODO: describe it
+`docker container run -d --rm -p 8080:8080 --network fields-net --name fields-backend backend-fields`
+
+
+## Run in development environment
+
+Import the `field-backend` project into Eclipse and perform "Update" in "Maven" menu.
+
+Before running in `dev` environment, setup the PostgreSQL database using the files to [configure the database](database/configureDatabase.sql) and [create the tables](database/script.sql). Don't forget to change the password properly (DB_PASSWORD).
+
+Also change the database properties in file [application.properties](field-backend/src/main/resources/application.properties)
+
+Run the `main` method of the class `com.roberto.field.FieldBackendApplication`
 
 
 # Accessing the services
@@ -146,7 +175,12 @@ The following GET requests can be made using a web browser or a `curl` command:
 
 PS: change the `localhost` address properly if you are accessing from another machine.
 
-For accessing all resources of the implemented API, use a complete [TODO: Postman collection](docs/Fields.postman_collection.json).
+For accessing all resources of the implemented APIs, use a complete this [Postman collection](docs/Fields.postman_collection.json).
+
+
+# Development environment
+
+
 
 
 # Notes and assumptions
@@ -162,13 +196,13 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	3.2) For simplifying the design, the properties field is not mapped to the database yet (it is recursively).
 
-	3.3) The "geoJson" and its children nodes (from JSON) will be mixed and stored in only one table (Coordinates). This table supports only one "coordinates" object (from JSON). The type attributes will be mapped only inside the source code (as constants). Coordinates of a hole is not supported (different of rfc7946).
+	3.3) The "geoJson" and its children nodes (from JSON) will be mixed and stored in only one table (Coordinates). This table supports only one "coordinates" object (from JSON). The type attributes will be mapped only inside the source code (as constants). Coordinates of a hole is not supported (different of [rfc7946](https://tools.ietf.org/html/rfc7946)).
 
 	3.4) The tables Field and Boundary was created in order to separate their specific data and this approach can support future multiple boundaries for a field.
 
 	3.5) The table Coordinate manages only coordinates data.
 
-	3.6) Precision of the following fields: Field id, Field name, Boundary id, Country code, latitude and longitude: (TODO: needs review based on Daniel's email)
+	3.6) Precision of the following fields: Field id, Field name, Boundary id, Country code, latitude and longitude: answered by Daniel.
 
 [//]: # (latitude and longitude will support 3 integer digits and 20 decimal digits)
 
@@ -194,25 +228,23 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	5.2) The database script was generated using SQLPowerArchitect model. The coordinate_id field was changed manually to SERIAL (modeling tool issue).
 
-	5.3) For running in `dev` environment, setup the PostgreSQL database using the files to [configure the database](database/configureDatabase.sql) and [create the tables](database/script.sql).
+	5.3) Used BigDecimal for latitude and longitude values (double didn't support).
 
-	5.4) Used BigDecimal for latitude and longitude values (double didn't support).
+	5.4) Before perform update a field, it cleans up the coordinates of current boundary, because the amount o boundaries may change in the new data.
 
-	5.5) Before perform update a field, it cleans up the coordinates of current boundary, because the amount o boundaries may change in the new data.
+	5.5) It was created two specific (unchecked) exceptions for handling and sending good format responses in case of some inconsistencies: FieldException and FieldNotFoundException. Unchecked to avoid declaring everywere. Only method handleException(...) in FieldController class handles them properly.
 
-	5.6) It was created two specific (unchecked) exceptions for handling and sending good format responses in case of some inconsistencies: FieldException and FieldNotFoundException. Unchecked to avoid declaring everywere. Only method handleException(...) in FieldController class handles them properly.
+	5.6) Any exception (bellow Exception class) will result in a BAD REQUEST to client. 
 
-	5.7) Any exception (bellow Exception class) will result in a BAD REQUEST to client. 
+	5.7) Implemented GeneralExceptionHandler class to handle any general exceptions.
 
-	5.8) Implemented GeneralExceptionHandler class to handle any general exceptions.
+	5.8) The service class FieldService serves the CRUD operations to the Rest controller.
 
-	5.9) The service class FieldService serves the CRUD operations to the Rest controller.
+	5.9) The utility class FieldDataConverter converts JSON to entities objects and vice versa.]
 
-	5.10) The utility class FieldDataConverter converts JSON to entities objects and vice versa.]
+	5.10) The utility class DateUtil converts String to Date objects and vice versa.
 
-	5.11) The utility class DateUtil converts String to Date objects and vice versa.
-
-	5.12) In FieldEntity: created is set only when field is persisted to database. updated is set every time update is performed.
+	5.11) In FieldEntity: created is set only when field is persisted to database. updated is set every time update is performed.
 
 
 6) Regards to Java project (Historical Weather API):
@@ -221,7 +253,7 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	6.2) Only "main" data will be mapped to receive data from OpenWeather Agro Monitoring API.
 
-	6.3) appid for polygon API is stored in application.properties file.
+	6.3) appid for polygon API not is stored in application.properties file anymore. It is a command line parameter now.
 
 	6.4) Using the fieldId as name of polygon (in PolygonDataRequest).
 
@@ -229,11 +261,23 @@ For accessing all resources of the implemented API, use a complete [TODO: Postma
 
 	6.6) Oficial API of weather history gives unauthorized error. Using sample API (as answered by Daniel) for tests.
 
-	6.7) Note: the data in response from weather history (using sample API) are only samples (they are not compatible with the dates used to query it). [Example used](https://samples.openweathermap.org/agro/1.0/weather/history?appid=fedc87646176973e8fa85df97a04f0fc&polyid=5f69118a714b526842e124ff&start=1600710398&end=1600191998)
+	6.7) Note: the data in response from weather history (using sample API) are only samples (they are not compatible with the dates used to query it). [Example used](https://samples.openweathermap.org/agro/1.0/weather/history?appid={$appid}&polyid=5f69118a714b526842e124ff&start=1600710398&end=1600191998).
 
 	6.8) Change property `historical.weather.rest.url` in file `/field-backend/src/main/resources/application.properties` to configure the weather history API properly.
 
 	6.9) Catching exceptions when retrieving data from OpenWeather API and handling it as FieldAPIException (for bad gateway response).
+
+
+
+7) Regards to Docker environment
+
+	7.1) Database port is different from default to avoid port in use conflict with local dev database.
+
+	7.2) All passwords and appid (OpenWeather key) must be configured in command line parameters.
+
+	7.3) Both containers use the same `fields-net` network.
+
+
 
 
 
