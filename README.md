@@ -139,7 +139,6 @@ This section describes how to run the application using the Docker container env
 
 ### Run the database container
 
-
 `docker container run -d --rm -p 5433:5432 --network fields-net -v $DATABASE_DATA_DIR:/var/lib/postgresql/data --name fields-dbserver db-fields`
 
 Change `$DATABASE_DATA_DIR` to your own database directory.
@@ -178,9 +177,12 @@ PS: change the `localhost` address properly if you are accessing from another ma
 For accessing all resources of the implemented APIs, use a complete this [Postman collection](docs/Fields.postman_collection.json).
 
 
-# Development environment
 
+#Reports
 
+For a simple test report, execute the command bellow and open the file `field-backend/target/site/surefire-report.html`.
+
+`mvn site`
 
 
 # Notes and assumptions
@@ -247,6 +249,7 @@ For accessing all resources of the implemented APIs, use a complete this [Postma
 	5.11) In FieldEntity: created is set only when field is persisted to database. updated is set every time update is performed.
 
 
+
 6) Regards to Java project (Historical Weather API):
 
 	6.1) GeoData and Geometry classes will be reused in Polygon JSON structure.
@@ -267,11 +270,14 @@ For accessing all resources of the implemented APIs, use a complete this [Postma
 
 	6.9) Catching exceptions when retrieving data from OpenWeather API and handling it as FieldAPIException (for bad gateway response).
 
+	6.10) New field `polygon_idd` in table `Boundary` to save id of the polygon created in OpenWeather API. Avoid creating new polygon when it already there. The OpenWeather API keeps the polygons.
 
+	6.11) Special note [polygon API](from https://agromonitoring.com/api/polygons): "When creating a polygon, the first and last positions are equivalent, and they MUST contain identical values" (example of incorrect API call).
+ 
 
 7) Regards to Docker environment
 
-	7.1) Database port is different from default to avoid port in use conflict with local dev database.
+	7.1) Database port is different from default to avoid port in use conflict with local development database.
 
 	7.2) All passwords and appid (OpenWeather key) must be configured in command line parameters.
 

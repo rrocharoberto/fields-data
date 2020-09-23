@@ -105,6 +105,27 @@
 			"response": []
 		},
 		{
+			"name": "Get All Fields",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/field-backend/fields/a0f63e74-d7ef-4924-acb3-0e770ae9ec98",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"field-backend",
+						"fields",
+						"a0f63e74-d7ef-4924-acb3-0e770ae9ec98"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Retrieve weather history",
 			"request": {
 				"method": "GET",

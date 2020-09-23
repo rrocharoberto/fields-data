@@ -15,6 +15,14 @@
 	<name>field-backend</name>
 	<description>Project to handle fields data</description>
 
+	<developers>
+		<developer>
+			<name>Roberto Ribeiro Rocha</name>
+			<email>rrocha.roberto@gmail.com</email>
+		</developer>
+	</developers>
+	<url>https://github.com/rrocharoberto/fields-data</url>
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -78,4 +86,24 @@
 		</plugins>
 	</build>
 
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<configuration>
+					<outputDirectory>${basedir}/target/newsite</outputDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<outputDirectory>${basedir}/target/newsite</outputDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
