@@ -105,6 +105,9 @@ In order to build the project, execute the following command inside the `field-b
 
 `mvn clean install`
 
+This command will run the unit and integration tests.
+ 
+
 ## Create the backend Docker image `backend-fields`
 
 In order to build the Docker image of Spring application, execute the following command inside the `field-backend` directory:
@@ -122,14 +125,7 @@ In order to build the Docker image of database, execute the following command in
 
 Change `$DB_PASSWORD` to your own database password.
 
-TODO: configure volumes: 
 
--v ${HOME}/postgres-data/:/var/lib/postgresql/data
-
--d --volumes-from PostgresData
-
-docker create -v /var/lib/postgresql/data --name PostgresData alpine
- 
 
 # Running process
 
@@ -143,9 +139,13 @@ This section describes how to run the application using the Docker container env
 
 ### Run the database container
 
-`docker container run -d --rm -p 5433:5432 --network fields-net --name fields-dbserver db-fields`
+
+`docker container run -d --rm -p 5433:5432 --network fields-net -v $DATABASE_DATA_DIR:/var/lib/postgresql/data --name fields-dbserver db-fields`
+
+Change `$DATABASE_DATA_DIR` to your own database directory.
 
 PS: external port was changed to avoid conflict with default PostgreSQL instance.
+
 
 ### Run the backend application container
 
@@ -156,9 +156,9 @@ PS: external port was changed to avoid conflict with default PostgreSQL instance
 
 Import the `field-backend` project into Eclipse and perform "Update" in "Maven" menu.
 
-Before running in `dev` environment, setup the PostgreSQL database using the files to [configure the database](database/configureDatabase.sql) and [create the tables](database/script.sql). Don't forget to change the password properly (DB_PASSWORD).
+Before running, setup the PostgreSQL database using the files to [configure the database](database/configureDatabase.sql) and [create the tables](database/script.sql). Don't forget to change the password properly (DB_PASSWORD) in `configureDatabase.sql` file.
 
-Also change the database properties in file [application.properties](field-backend/src/main/resources/application.properties)
+Also change the database properties in file [application.properties](field-backend/src/main/resources/application.properties) properly
 
 Run the `main` method of the class `com.roberto.field.FieldBackendApplication`
 
@@ -286,6 +286,8 @@ For accessing all resources of the implemented APIs, use a complete this [Postma
 	8.2) Unit test of weather history service is defined in WeatherServiceTests class. 
 
 	8.3) Unit test uses Mockito to mock FieldDAO and WeatherServiceDataRetriever. Methods mocked findById(...), doCreatePolygon(...) and doRetrieveHistoricalWeather(...).
+
+	8.4) Integration test uses in memory database configured in `field-backend/src/test/resources/application.properties` file.
 
 
 
