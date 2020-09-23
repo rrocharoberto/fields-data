@@ -18,17 +18,16 @@ public class FieldEntity implements Serializable {
 	private static final long serialVersionUID = 8047516349903115814L; // generated
 
 	public FieldEntity() {
-
 	}
 
 	@Id
-	@Column(name = "FIELD_ID", length = 50)
+	@Column(name = "FIELD_ID", length = 36)
 	private String id;
 
 	@Column(name = "NAME", nullable = false, length = 50)
 	private String name;
 
-	@Column(name = "CREATED", nullable = false, length = 50)
+	@Column(name = "CREATED", nullable = false)
 	private Date created; // set only when field is persisted to database
 
 	private Date updated; // set every time update is performed

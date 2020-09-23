@@ -1,8 +1,6 @@
---generated using SQLPowerArchitect model.
-
 
 CREATE TABLE Field (
-                field_id VARCHAR(50) NOT NULL,
+                field_id VARCHAR(36) NOT NULL,
                 name VARCHAR(50) NOT NULL,
                 created TIMESTAMP NOT NULL,
                 updated TIMESTAMP,
@@ -12,19 +10,21 @@ CREATE TABLE Field (
 
 
 CREATE TABLE Boundary (
-                boundary_id VARCHAR(50) NOT NULL,
+                boundary_id VARCHAR(36) NOT NULL,
                 created TIMESTAMP NOT NULL,
                 updated TIMESTAMP,
-                field_fk VARCHAR(50) NOT NULL,
+                field_fk VARCHAR(36) NOT NULL,
+                polygon_id VARCHAR(36),
                 CONSTRAINT boundary_pk PRIMARY KEY (boundary_id)
 );
+--COMMENT ON COLUMN Boundary.polygon_id IS 'Id of the polygon created in OpenWeather API.';
 
 
 CREATE TABLE Coordinate (
                 coordinate_id SERIAL NOT NULL,
                 latitude NUMERIC(23,20) NOT NULL,
                 longitude NUMERIC(23,20) NOT NULL,
-                boundary_fk VARCHAR(50) NOT NULL,
+                boundary_fk VARCHAR(36) NOT NULL,
                 CONSTRAINT coordinate_pk PRIMARY KEY (coordinate_id)
 );
 

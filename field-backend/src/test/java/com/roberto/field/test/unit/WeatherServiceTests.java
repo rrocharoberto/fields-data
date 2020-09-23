@@ -28,7 +28,7 @@ import com.roberto.field.entities.BoundaryEntity;
 import com.roberto.field.entities.CoordinateEntity;
 import com.roberto.field.entities.FieldEntity;
 import com.roberto.field.service.WeatherService;
-import com.roberto.field.service.WeatherServiceDataRetriever;
+import com.roberto.field.util.WeatherServiceDataRetriever;
 
 public class WeatherServiceTests {
 
@@ -46,24 +46,41 @@ public class WeatherServiceTests {
 	}
 
 	@Test
-	public void testCreateFieldSuccess() throws Exception {
+	public void testCreateFieldExistingPolygon() throws Exception {
 
 		// prepate the data
 		String fieldId = "fieldId-12345";
 		String boundaryId = "boundaryId-12345";
 		String polyResponseId = "polyResponseId-12345";
+		FieldEntity fieldEntity = getFieldEntity(fieldId, boundaryId, null);
+
+		testRetrieveWeatherHistoryData(fieldId, boundaryId, polyResponseId, fieldEntity);
+	}
+
+	@Test
+	public void testCreateFieldNonExistingPolygon() throws Exception {
+
+		// prepate the data
+		String fieldId = "fieldId-12345";
+		String boundaryId = "boundaryId-12345";
+		String polyResponseId = "polyResponseId-12345";
+		FieldEntity fieldEntity = getFieldEntity(fieldId, boundaryId, polyResponseId);
+
+		testRetrieveWeatherHistoryData(fieldId, boundaryId, polyResponseId, fieldEntity);
+	}
+	
+	private void testRetrieveWeatherHistoryData(String fieldId, String boundaryId, String polyResponseId, FieldEntity fieldEntity) {
 
 		GeoData geo_json = new GeoData();
 		PolygonDataRequest polygonReq = new PolygonDataRequest(fieldId, geo_json);
-		PolygonDataResponse response = new PolygonDataResponse();
-		response.setId(polyResponseId);
+		PolygonDataResponse ploygonResponse = new PolygonDataResponse();
+		ploygonResponse.setId(polyResponseId);
 		List<HistoricalWeatherData> historicalWeatherDataResponse = getHistoricalWeatherDataResponse();
 
 		// configure mock
 
-		FieldEntity fieldEntity = getFieldEntity(fieldId, boundaryId);
 		Mockito.when(fielDAO.findById(fieldId)).thenReturn(Optional.of(fieldEntity));
-		Mockito.when(dataRetriever.doCreatePolygon(polygonReq)).thenReturn(response);
+		Mockito.when(dataRetriever.doCreatePolygon(polygonReq)).thenReturn(ploygonResponse);
 		Mockito.when(dataRetriever.doRetrieveHistoricalWeather(polyResponseId))
 				.thenReturn(historicalWeatherDataResponse);
 
@@ -73,13 +90,13 @@ public class WeatherServiceTests {
 		//check the results
 		assertNotNull(weatherHistoryResponse);
 
-		WeatherData[] weatherData = weatherHistoryResponse.getWeatherData();
+		WeatherData[] weatherDataResp = weatherHistoryResponse.getWeatherData();
 
-		assertNotNull(weatherData);
-		assertEquals(weatherData.length, historicalWeatherDataResponse.size());
+		assertNotNull(weatherDataResp);
+		assertEquals(historicalWeatherDataResponse.size(), weatherDataResp.length);
 
-		for (int i = 0; i < weatherData.length; i++) {
-			WeatherData actual = weatherData[i];
+		for (int i = 0; i < weatherDataResp.length; i++) {
+			WeatherData actual = weatherDataResp[i];
 			HistoricalWeatherData expected = historicalWeatherDataResponse.get(i);
 
 			assertNotNull(expected.getMain());
@@ -110,7 +127,7 @@ public class WeatherServiceTests {
 
 	// these data are the same as the PDF, (but not the ids)
 
-	private FieldEntity getFieldEntity(String fieldId, String boundaryId) {
+	private FieldEntity getFieldEntity(String fieldId, String boundaryId, String polygonId) {
 		FieldEntity field = new FieldEntity();
 		field.setId(fieldId);
 		field.setName("Potato field");
@@ -118,6 +135,7 @@ public class WeatherServiceTests {
 
 		BoundaryEntity boundary = new BoundaryEntity();
 		boundary.setId(boundaryId);
+		boundary.setPolygonId(polygonId);
 
 		boundary.setCoordinates(getCoordinates());
 		field.setBoundary(boundary);

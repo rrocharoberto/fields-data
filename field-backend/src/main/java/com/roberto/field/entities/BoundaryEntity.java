@@ -18,20 +18,22 @@ import javax.persistence.Table;
 @Table(name = "BOUNDARY")
 public class BoundaryEntity implements Serializable {
 
-	private static final long serialVersionUID = -9082282494569291153L; // generated
+	private static final long serialVersionUID = 2959950156296555191L; // generated
 
 	public BoundaryEntity() {
-
 	}
 
 	@Id
-	@Column(name = "BOUNDARY_ID", length = 50)
+	@Column(name = "BOUNDARY_ID", length = 36)
 	private String id;
 
 	@Column(name = "CREATED", nullable = false, length = 50)
 	private Date created;
 
 	private Date updated;
+
+	@Column(name = "POLYGON_ID", length = 36)
+	private String polygonId;
 
 	@OneToOne
 	@JoinColumn(name = "FIELD_FK")
@@ -68,6 +70,14 @@ public class BoundaryEntity implements Serializable {
 
 	public void setUpdated(Date updated) {
 		this.updated = updated;
+	}
+
+	public String getPolygonId() {
+		return polygonId;
+	}
+
+	public void setPolygonId(String polygonId) {
+		this.polygonId = polygonId;
 	}
 
 	public FieldEntity getField() {
