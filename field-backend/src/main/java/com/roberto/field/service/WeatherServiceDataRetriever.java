@@ -63,7 +63,8 @@ public class WeatherServiceDataRetriever {
 			logger.info("Polygon created id: ", response.getId());
 			return response;
 		} catch (Exception ex) {
-			throw new FieldAPIException("Error retrieving data from Agro Monitoring Polygon API.", ex);
+			throw new FieldAPIException(
+					"Error retrieving data from Agro Monitoring Polygon API. Details: " + ex.getMessage(), ex);
 		}
 	}
 	
@@ -93,7 +94,8 @@ public class WeatherServiceDataRetriever {
 			        .block();
 			return list;
 		} catch (Exception ex) {
-			throw new FieldAPIException("Error retrieving data from Agro Monitoring Historical Weather API.", ex);
+			throw new FieldAPIException(
+					"Error retrieving data from Agro Monitoring Historical Weather API. Details: " + ex.getMessage(), ex);
 		}
 	}
 

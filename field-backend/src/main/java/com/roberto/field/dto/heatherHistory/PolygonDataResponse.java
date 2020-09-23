@@ -1,8 +1,6 @@
 
 package com.roberto.field.dto.heatherHistory;
 
-import java.util.Arrays;
-
 import com.roberto.field.dto.GeoData;
 
 public class PolygonDataResponse {
