@@ -2,7 +2,6 @@ package com.roberto.field.util;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.roberto.field.controller.support.FieldNotFoundException;
@@ -53,10 +52,7 @@ public class FieldDataConverter {
 		if (boundary.getId() == null) {
 			throw new FieldNotFoundException("Boundary with null id.");
 		}
-		// TODO: waiting Daniel's email about created and updated
-		BoundaryEntity entity = new BoundaryEntity(boundary.getId(), new Date());
-
-		return entity;
+		return new BoundaryEntity(boundary.getId());
 	}
 
 	/**
@@ -83,8 +79,8 @@ public class FieldDataConverter {
 		Field field = new Field();
 		field.setId(entity.getId());
 		field.setName(entity.getName());
-		field.setCreated(DateUtil.convertDateToString(entity.getCreated()));// check Daniel's response
-		field.setUpdated(DateUtil.convertDateToString(entity.getUpdated()));// check Daniel's response
+		field.setCreated(DateUtil.convertDateToString(entity.getCreated()));
+		field.setUpdated(DateUtil.convertDateToString(entity.getUpdated()));
 		field.setCountryCode(entity.getCountryCode());
 
 		return field;

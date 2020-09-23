@@ -196,22 +196,25 @@ For a simple test report, execute the command bellow and open the file `field-ba
 
 	3.1) It's not necessary define one table for each JSON message level (see [physical model](docs/dbPhysicalModel.pdf).
 
-	3.2) For simplifying the design, the properties field is not mapped to the database yet (it is recursively).
+	3.2) For simplifying the design, the `properties` field is not mapped to the database yet (it is recursively).
 
-	3.3) The "geoJson" and its children nodes (from JSON) will be mixed and stored in only one table (Coordinates). This table supports only one "coordinates" object (from JSON). The type attributes will be mapped only inside the source code (as constants). Coordinates of a hole is not supported (different of [rfc7946](https://tools.ietf.org/html/rfc7946)).
+	3.3) Also, the field `type` of `geoJson` is not validated. Its default value is `"Feature"`. 
 
-	3.4) The tables Field and Boundary was created in order to separate their specific data and this approach can support future multiple boundaries for a field.
+	3.4) The "geoJson" and its children nodes (from JSON) will be mixed and stored in only one table (Coordinates). This table supports only one "coordinates" object (from JSON). The type attributes will be mapped only inside the source code (as constants). Coordinates of a hole is not supported (different of [rfc7946](https://tools.ietf.org/html/rfc7946)).
 
-	3.5) The table Coordinate manages only coordinates data.
+	3.5) The tables Field and Boundary was created in order to separate their specific data and this approach can support future multiple boundaries for a field.
 
-	3.6) Precision of the following fields: Field id, Field name, Boundary id, Country code, latitude and longitude: answered by Daniel.
+	3.6) The table Coordinate manages only coordinates data.
+
+	3.7) Precision of the following fields: Field id, Field name, Boundary id, Country code, latitude and longitude: answered by Daniel.
 
 [//]: # (latitude and longitude will support 3 integer digits and 20 decimal digits)
 
 
+
 4) Regards to JSON validation:
 
-	4.1) The JSON fields: "id",  "name", "countryCode", "bounderies", "geoJson", "geometry", "type" (geoJson and geometry), "coordinates" are mandatory.
+	4.1) The JSON fields: "id",  "name", "countryCode", "bounderies", "geoJson", "geometry" (not "type") (geoJson and geometry), "coordinates" are mandatory.
 
 	4.2) "properties" is optional (and will not handled now).
 
@@ -222,6 +225,7 @@ For a simple test report, execute the command bellow and open the file `field-ba
 	4.5) Field "bounderies" has different spelling.
 
 	4.6) The first implementation will support only exterior ring for coordinates.
+
 
 
 5) Regards to Java project (CRUD Field API):
@@ -274,6 +278,7 @@ For a simple test report, execute the command bellow and open the file `field-ba
 
 	6.11) Special note [polygon API](from https://agromonitoring.com/api/polygons): "When creating a polygon, the first and last positions are equivalent, and they MUST contain identical values" (example of incorrect API call).
  
+
 
 7) Regards to Docker environment
 

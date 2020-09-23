@@ -42,10 +42,9 @@ public class BoundaryEntity implements Serializable {
 	@OneToMany(mappedBy = "boundary", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<CoordinateEntity> coordinates;
 
-	public BoundaryEntity(String id, Date created) {
+	public BoundaryEntity(String id) {
 		super();
 		this.id = id;
-		this.created = created;
 	}
 
 	public String getId() {

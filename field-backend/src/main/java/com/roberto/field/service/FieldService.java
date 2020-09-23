@@ -84,8 +84,8 @@ public class FieldService {
 
 		FieldEntity fieldEntity = convertDTOFieldToEntity(newField);
 		fieldEntity.setCreated(new Date()); //set every only when the field is created
+		fieldEntity.getBoundary().setCreated(new Date());
 		dao.save(fieldEntity);
-//		return ResponseStatus.success("Field created successfully.");
 	}
 
 	/**
@@ -105,8 +105,9 @@ public class FieldService {
 		dao.deleteCoodinatesOfBoundary(fieldEntity.getBoundary().getId()); // cleans up the coordinates of current
 																			// boundary
 		fieldEntity.setUpdated(new Date()); //set every time update is performed
+		fieldEntity.getBoundary().setUpdated(new Date());
 		dao.save(fieldEntity);
-		//return ResponseStatus.success("Field updated successfully.");
+
 		return theField;
 	}
 
@@ -122,7 +123,7 @@ public class FieldService {
 			throw new FieldNotFoundException("Error deleting field: " + fieldId + ". No field found.");
 		}
 		dao.deleteById(fieldId);
-		//return ResponseStatus.success("Field deleted successfully.");
+
 		Field field = converter.convertFieldEntityToJSON(existingField.get());
 		return field;
 	}
