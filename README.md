@@ -1,11 +1,13 @@
 # fields-data
-This project offers a simple rest API to manage fields data and retrieve weather history of fields.
+This project contains a simple rest API to manage fields data and retrieve weather history of the fields.
 
 # Rest API Requirements
 
+This project has two use cases:
+
 ## 1) Field management
 
-A Rest API access through `/fields` endpoint.
+A Rest API access through `/fields` endpoint that should offer CRUD operations for field data.
 
 The JSON structure is defined in a private document.
 
@@ -19,7 +21,7 @@ The JSON structure is defined in a private document.
 
 ## 2) Weather history
 
-Rest API that fetches weather history of a field boundary. The data should be retrieved using API from OpenWeather Agro Monitoring.
+Rest API that fetches weather history of a field boundary. The data should be retrieved using API from [OpenWeather Agro Monitoring](https://agromonitoring.com/api).
 
 The API endpoint is available through GET request endpoint: `/fields/{fieldId}/weather` .
 
@@ -62,11 +64,13 @@ Please refer to the following diagrams for specific design view:
 
 - Provides the Rest API's regarding the both requirements defined before in this document.
 
-- The Rest API's use Spring framework to provide resources for easy implementation.
+- Uses Rest API's use Spring framework to provide resources for easy implementation.
 
 - Uses JPA/Hibernate to easy interact (persist and retrieve data) with relational database.
 
 - Uses SpringBoot to easily publish the project in a web container.
+
+- Has a few tests.
 
 
 ## Database
@@ -83,7 +87,7 @@ Please refer to this [physical model](docs/dbPhysicalModel.pdf) for a database r
 
 # Development Environment
 
-This project uses this tools:
+This project uses the following tools:
 - Java - OpenJDK 11
 - Maven 3.5
 - Docker 19.03
@@ -99,18 +103,20 @@ The docker containers uses the following tools:
 
 # Building process
 
+The building process prepares the project to run it in a Docker environment. 
+
 ## Build backend project
 
-In order to build the project, execute the following command inside the `field-backend` directory:
+In order to build the Spring Boot project, execute the following command inside the `field-backend` directory:
 
 `mvn clean install`
 
-This command will run the unit and integration tests.
- 
+This command will also run the unit and integration tests.
+
 
 ## Create the backend Docker image `backend-fields`
 
-In order to build the Docker image of Spring application, execute the following command inside the `field-backend` directory:
+In order to build the Docker image of Spring Boot application, execute the following command inside the `field-backend` directory:
 
 `docker build --build-arg DB_PASSWORD=$DB_PASSWORD --build-arg WHEATHER_APPID=$WHEATHER_APPID -t backend-fields .`
 
@@ -123,7 +129,7 @@ In order to build the Docker image of database, execute the following command in
 
 `docker build --build-arg DB_PASSWORD=$DB_PASSWORD -t db-fields .`
 
-Change `$DB_PASSWORD` to your own database password.
+Change `$DB_PASSWORD` to your own database password (same as `backend-fields` container).
 
 
 
@@ -143,7 +149,7 @@ This section describes how to run the application using the Docker container env
 
 Change `$DATABASE_DATA_DIR` to your own database directory.
 
-PS: external port was changed to avoid conflict with default PostgreSQL instance.
+PS: external port was changed to avoid conflict with the host default PostgreSQL instance.
 
 
 ### Run the backend application container
@@ -155,9 +161,9 @@ PS: external port was changed to avoid conflict with default PostgreSQL instance
 
 Import the `field-backend` project into Eclipse and perform "Update" in "Maven" menu.
 
-Before running, setup the PostgreSQL database using the files to [configure the database](database/configureDatabase.sql) and [create the tables](database/script.sql). Don't forget to change the password properly (DB_PASSWORD) in `configureDatabase.sql` file.
+Before running the application, setup the PostgreSQL database using the script files [configure the database](database/configureDatabase.sql) and [create the tables](database/script.sql). Don't forget to change the password properly (DB_PASSWORD) in `configureDatabase.sql` file.
 
-Also change the database properties in file [application.properties](field-backend/src/main/resources/application.properties) properly
+Also change the database properties in file [application.properties](field-backend/src/main/resources/application.properties) properly.
 
 Run the `main` method of the class `com.roberto.field.FieldBackendApplication`
 
@@ -174,13 +180,15 @@ The following GET requests can be made using a web browser or a `curl` command:
 
 PS: change the `localhost` address properly if you are accessing from another machine.
 
-For accessing all resources of the implemented APIs, use a complete this [Postman collection](docs/Fields.postman_collection.json).
+Use the `fieldId` of your choice.
+
+For accessing all resources of the implemented APIs, use this complete [Postman collection](docs/Fields.postman_collection.json).
 
 
 
-#Reports
+# Reports
 
-For a simple test report, execute the command bellow and open the file `field-backend/target/site/surefire-report.html`.
+For a basic test report, execute the command bellow (inside `field-backend` directory) and open the file `field-backend/target/site/surefire-report.html`.
 
 `mvn site`
 
@@ -194,21 +202,19 @@ For a simple test report, execute the command bellow and open the file `field-ba
 
 3) Regards to database model (created using SQLPowerArchitect tool):
 
-	3.1) It's not necessary define one table for each JSON message level (see [physical model](docs/dbPhysicalModel.pdf).
+	3.1) It's not necessary define one table for each JSON message level (see [physical model](docs/dbPhysicalModel.pdf)).
 
 	3.2) For simplifying the design, the `properties` field is not mapped to the database yet (it is recursively).
 
 	3.3) Also, the field `type` of `geoJson` is not validated. Its default value is `"Feature"`. 
 
-	3.4) The "geoJson" and its children nodes (from JSON) will be mixed and stored in only one table (Coordinates). This table supports only one "coordinates" object (from JSON). The type attributes will be mapped only inside the source code (as constants). Coordinates of a hole is not supported (different of [rfc7946](https://tools.ietf.org/html/rfc7946)).
+	3.4) The "geoJson" and its children nodes (from JSON) will be mixed and stored in only one table (`Coordinate`). This table supports only one "coordinates" object (from JSON). The type attributes will be mapped only inside the source code (as constants). Coordinates of a hole is not supported (different of [rfc7946](https://tools.ietf.org/html/rfc7946)).
 
-	3.5) The tables Field and Boundary was created in order to separate their specific data and this approach can support future multiple boundaries for a field.
+	3.5) The tables `Field` and `Boundary` were created in order to separate their specific data and this approach can support future multiple boundaries for a field.
 
-	3.6) The table Coordinate manages only coordinates data.
+	3.6) Precision of the following fields: Field id, Field name, Boundary id, Country code, latitude and longitude: answered by Daniel. Latitude and longitude will support 3 integer digits and 20 decimal digits.
 
-	3.7) Precision of the following fields: Field id, Field name, Boundary id, Country code, latitude and longitude: answered by Daniel.
-
-[//]: # (latitude and longitude will support 3 integer digits and 20 decimal digits)
+[//]: # (some comment)
 
 
 
@@ -216,7 +222,7 @@ For a simple test report, execute the command bellow and open the file `field-ba
 
 	4.1) The JSON fields: "id",  "name", "countryCode", "bounderies", "geoJson", "geometry" (not "type") (geoJson and geometry), "coordinates" are mandatory.
 
-	4.2) "properties" is optional (and will not handled now).
+	4.2) "properties" is optional (and will not be handled now).
 
 	4.3) Only the node "coordinates" won't be validated.
 
@@ -232,51 +238,49 @@ For a simple test report, execute the command bellow and open the file `field-ba
 
 	5.1) The base project was created using [Spring Initializr](https://start.spring.io) (Spring Boot v2.3.4), with the following dependencies: Spring Web, DevTools, Data JPA and PostgreSQL Driver.
 
-	5.2) The database script was generated using SQLPowerArchitect model. The coordinate_id field was changed manually to SERIAL (modeling tool issue).
+	5.2) The database script was generated using SQLPowerArchitect model. The `coordinate_id` field was changed manually to SERIAL (modeling tool issue).
 
 	5.3) Used BigDecimal for latitude and longitude values (double didn't support).
 
-	5.4) Before perform update a field, it cleans up the coordinates of current boundary, because the amount o boundaries may change in the new data.
+	5.4) Before perform update of a field, it cleans up the coordinates of current boundary, because the amount o boundaries may change in the new data.
 
-	5.5) It was created two specific (unchecked) exceptions for handling and sending good format responses in case of some inconsistencies: FieldException and FieldNotFoundException. Unchecked to avoid declaring everywere. Only method handleException(...) in FieldController class handles them properly.
+	5.5) It was created two specific (unchecked) exceptions for handling and sending good format responses in case of some inconsistencies: `FieldException` and `FieldNotFoundException`. The choice of unchecked ones was to avoid declaring it everywhere. Only method `handleException(...)` in `FieldController` class handles them properly.
 
-	5.6) Any exception (bellow Exception class) will result in a BAD REQUEST to client. 
+	5.6) Any exception (bellow `Exception` class hierarchy) will result in a BAD REQUEST to client. It was implemented `GeneralExceptionHandler` class to handle any general exceptions.
 
-	5.7) Implemented GeneralExceptionHandler class to handle any general exceptions.
+	5.7) The service classes `FieldService` and `WeatherService` serve the CRUD operations and weather resources to the Rest controller.
 
-	5.8) The service class FieldService serves the CRUD operations to the Rest controller.
+	5.8) The utility class `FieldDataConverter` converts JSON to entities objects and vice versa.
 
-	5.9) The utility class FieldDataConverter converts JSON to entities objects and vice versa.]
+	5.9) The utility class `DateUtil` converts String to Date objects and vice versa.
 
-	5.10) The utility class DateUtil converts String to Date objects and vice versa.
-
-	5.11) In FieldEntity: created is set only when field is persisted to database. updated is set every time update is performed.
+	5.10) In `FieldEntity`, attribute `created` is set only when field is persisted to database and `updated` is set every time update (PUT) is performed.
 
 
 
 6) Regards to Java project (Historical Weather API):
 
-	6.1) GeoData and Geometry classes will be reused in Polygon JSON structure.
+	6.1) `GeoData` and `Geometry` classes will be reused in `Polygon` API JSON structure.
 
-	6.2) Only "main" data will be mapped to receive data from OpenWeather Agro Monitoring API.
+	6.2) Only `main` data will be mapped to receive data from OpenWeather Agro Monitoring API.
 
-	6.3) appid for polygon API not is stored in application.properties file anymore. It is a command line parameter now.
+	6.3) `appid` for polygon API not is stored in application.properties file anymore. It is a command line parameter now.
 
-	6.4) Using the fieldId as name of polygon (in PolygonDataRequest).
+	6.4) Using the `fieldId` as name of polygon (in `PolygonDataRequest`).
 
 	6.5) Added extra dependency `spring-boot-starter-webflux` in order to implement Rest client for polygon and weather history APIs.
 
-	6.6) Oficial API of weather history gives unauthorized error. Using sample API (as answered by Daniel) for tests.
+	6.6) Official API of weather history gives unauthorized error. Using sample API (as answered by Daniel) for tests.
 
-	6.7) Note: the data in response from weather history (using sample API) are only samples (they are not compatible with the dates used to query it). [Example used](https://samples.openweathermap.org/agro/1.0/weather/history?appid={$appid}&polyid=5f69118a714b526842e124ff&start=1600710398&end=1600191998).
+	6.7) Note: the data in response from weather history (using sample API) are only samples (they are not compatible with the dates used to query it). [Example used](https://samples.openweathermap.org/agro/1.0/weather/history?appid={$appid}&polyid=5f69118a714b526842e124ff&start=1600710398&end=1600191998) (change `appid` properly).
 
 	6.8) Change property `historical.weather.rest.url` in file `/field-backend/src/main/resources/application.properties` to configure the weather history API properly.
 
-	6.9) Catching exceptions when retrieving data from OpenWeather API and handling it as FieldAPIException (for bad gateway response).
+	6.9) Catching exceptions when retrieving data from OpenWeather API and handling it as `FieldAPIException` (for bad gateway HTTP response).
 
 	6.10) New field `polygon_idd` in table `Boundary` to save id of the polygon created in OpenWeather API. Avoid creating new polygon when it already there. The OpenWeather API keeps the polygons.
 
-	6.11) Special note [polygon API](from https://agromonitoring.com/api/polygons): "When creating a polygon, the first and last positions are equivalent, and they MUST contain identical values" (example of incorrect API call).
+	6.11) Special note of [polygon API](from https://agromonitoring.com/api/polygons): "When creating a polygon, the first and last positions are equivalent, and they MUST contain identical values" (example of incorrect API call).
  
 
 
@@ -290,15 +294,15 @@ For a simple test report, execute the command bellow and open the file `field-ba
 
 
 
-8) Tests
+8) Regards to Tests
 
-	8.1) Integration test (create and retrieve fields) are defined in FieldBackendApplicationTests class.
+	8.1) Integration test (only create and retrieve fields) are defined in `FieldBackendApplicationTests` class.
 
-	8.2) Unit test of weather history service is defined in WeatherServiceTests class. 
+	8.2) Only unit test of weather history service is defined in `WeatherServiceTests` class. 
 
-	8.3) Unit test uses Mockito to mock FieldDAO and WeatherServiceDataRetriever. Methods mocked findById(...), doCreatePolygon(...) and doRetrieveHistoricalWeather(...).
+	8.3) Unit test uses Mockito to mock `FieldDAO` and `WeatherServiceDataRetriever`. Methods mocked `findById(...)`, `doCreatePolygon(...)` and `doRetrieveHistoricalWeather(...)`.
 
-	8.4) Integration test uses in memory database configured in `field-backend/src/test/resources/application.properties` file.
+	8.4) Integration test uses H2 in memory database configured in `field-backend/src/test/resources/application.properties` file.
 
 
 
