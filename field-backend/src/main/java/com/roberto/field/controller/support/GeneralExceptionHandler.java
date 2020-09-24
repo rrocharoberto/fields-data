@@ -1,5 +1,7 @@
 package com.roberto.field.controller.support;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GeneralExceptionHandler {
 
+	private Logger logger = LoggerFactory.getLogger(GeneralExceptionHandler.class);
+	
 	public GeneralExceptionHandler() {
 
 	}
@@ -19,7 +23,7 @@ public class GeneralExceptionHandler {
 	 */
 	@ExceptionHandler
 	public ResponseEntity<FieldErrorMessage> handleException(Exception ex) {
-		ex.printStackTrace();
+		logger.info("handleException", ex);
 		
 		FieldErrorMessage error = new FieldErrorMessage(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -30,7 +34,7 @@ public class GeneralExceptionHandler {
 
 	@ExceptionHandler
 	public ResponseEntity<FieldErrorMessage> handleException(FieldAPIException ex) {
-		ex.printStackTrace();
+		logger.info("handleException", ex);
 		
 		FieldErrorMessage error = new FieldErrorMessage(
 				HttpStatus.BAD_GATEWAY.value(),

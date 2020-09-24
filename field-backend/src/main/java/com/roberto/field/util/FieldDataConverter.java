@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.roberto.field.controller.support.FieldNotFoundException;
 import com.roberto.field.dto.Boundary;
 import com.roberto.field.dto.Field;
@@ -12,11 +15,14 @@ import com.roberto.field.dto.Geometry;
 import com.roberto.field.entities.BoundaryEntity;
 import com.roberto.field.entities.CoordinateEntity;
 import com.roberto.field.entities.FieldEntity;
+import com.roberto.field.service.WeatherService;
 
 public class FieldDataConverter {
 
 	private static final int latitudeIdx = 0;
 	private static final int longitudeIdx = 1;
+	
+	private Logger logger = LoggerFactory.getLogger(WeatherService.class);
 
 	public FieldDataConverter() {
 	}
@@ -27,6 +33,8 @@ public class FieldDataConverter {
 	 * @return
 	 */
 	public FieldEntity convertJSONToFieldEntity(Field field) {
+		logger.debug("retrieveWeatherHistory");
+		
 		if (field.getId() == null) {
 			throw new FieldNotFoundException("Field with null id.");
 		}
@@ -48,7 +56,8 @@ public class FieldDataConverter {
 	 * @return
 	 */
 	public BoundaryEntity convertJSONToBoundaryEntity(Boundary boundary) {
-
+		logger.debug("convertJSONToBoundaryEntity");
+		
 		if (boundary.getId() == null) {
 			throw new FieldNotFoundException("Boundary with null id.");
 		}
@@ -61,7 +70,8 @@ public class FieldDataConverter {
 	 * @return
 	 */
 	public List<CoordinateEntity> convertJSONToCoordinateEntity(Boundary boundary) {
-
+		logger.debug("convertJSONToCoordinateEntity");
+		
 		List<CoordinateEntity> coordinates = new ArrayList<CoordinateEntity>();
 
 		BigDecimal[][] exteriorGeometry = boundary.getGeoJson().getGeometry().getExteriorGeometry();
@@ -76,6 +86,8 @@ public class FieldDataConverter {
 	}
 
 	public Field convertFieldEntityToJSON(FieldEntity entity) {
+		logger.debug("convertFieldEntityToJSON");
+		
 		Field field = new Field();
 		field.setId(entity.getId());
 		field.setName(entity.getName());
@@ -87,6 +99,8 @@ public class FieldDataConverter {
 	}
 
 	public Boundary convertBoundaryEntityToJSON(BoundaryEntity boundaryEntity) {
+		logger.debug("convertBoundaryEntityToJSON");
+		
 		Boundary boundary = new Boundary();
 		boundary.setId(boundaryEntity.getId());
 		boundary.setCreated(DateUtil.convertDateToString(boundaryEntity.getCreated()));// check Daniel's response
@@ -96,6 +110,8 @@ public class FieldDataConverter {
 	}
 
 	public GeoData convertCoordinateEntityToJSON(List<CoordinateEntity> coordinateEntities) {
+		logger.debug("convertCoordinateEntityToJSON");
+		
 		Geometry geometry = new Geometry();
 
 		BigDecimal coordinatesMatrix[][][] = new BigDecimal[1][coordinateEntities.size()][2];

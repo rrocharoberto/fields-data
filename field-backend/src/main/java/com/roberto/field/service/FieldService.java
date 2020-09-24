@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,10 @@ import com.roberto.field.util.FieldDataConverter;
 @Service
 public class FieldService {
 
+	private static final int MINIMAL_NUMBER_VALID_COORDINATES = 3;
+	
+	private Logger logger = LoggerFactory.getLogger(FieldService.class);
+
 	@Autowired
 	public FieldDAO dao;
 
@@ -39,6 +45,7 @@ public class FieldService {
 	 * @return
 	 */
 	public List<Field> getAllFields() {
+		logger.info("getAllFields");
 		Iterable<FieldEntity> entities = dao.findAll();
 
 		List<Field> fields = new ArrayList<Field>();
@@ -56,7 +63,8 @@ public class FieldService {
 	 * @return
 	 */
 	public Field getFieldById(String fieldId) {
-
+		logger.info("getFieldById");
+		
 		Optional<FieldEntity> entity = dao.findById(fieldId);
 		if (!entity.isPresent()) {
 			throw new FieldNotFoundException("Field not found with id: " + fieldId);
@@ -73,6 +81,8 @@ public class FieldService {
 	 * @return
 	 */
 	public void createField(Field newField) {
+		logger.info("createField");
+		
 		Optional<FieldEntity> existingField = dao.findById(newField.getId());
 		if (existingField.isPresent()) {
 			throw new FieldException("Field already exists with id: " + newField.getId());
@@ -96,6 +106,8 @@ public class FieldService {
 	 * @return
 	 */
 	public Field updateField(String fieldId, Field theField) {
+		logger.info("updateField");
+		
 		FieldEntity fieldEntity = convertDTOFieldToEntity(theField);
 
 		Optional<FieldEntity> existingField = dao.findById(fieldId);
@@ -104,8 +116,13 @@ public class FieldService {
 		}
 		dao.deleteCoodinatesOfBoundary(fieldEntity.getBoundary().getId()); // cleans up the coordinates of current
 																			// boundary
+		
+		//keeps the created and polygonId
 		fieldEntity.getBoundary().setCreated(existingField.get().getBoundary().getCreated());
 		fieldEntity.setCreated(existingField.get().getCreated());
+		fieldEntity.getBoundary().setPolygonId(existingField.get().getBoundary().getPolygonId());
+
+		//set new date for updated
 		fieldEntity.setUpdated(new Date()); //set every time update is performed
 		fieldEntity.getBoundary().setUpdated(new Date());
 		dao.save(fieldEntity);
@@ -120,6 +137,8 @@ public class FieldService {
 	 * @return
 	 */
 	public Field deleteField(String fieldId) {
+		logger.info("deleteField");
+		
 		Optional<FieldEntity> existingField = dao.findById(fieldId);
 		if (!existingField.isPresent()) {
 			throw new FieldNotFoundException("Error deleting field: " + fieldId + ". No field found.");
@@ -137,6 +156,8 @@ public class FieldService {
 	 * @return the field ready to send via JSON.
 	 */
 	private Field convertEntityFieldToDTO(FieldEntity entity) {
+		logger.debug("convertEntityFieldToDTO");
+		
 		if (entity == null) {
 			throw new FieldNotFoundException("Invalid fieldEntity data. Field is null.");
 		}
@@ -163,7 +184,8 @@ public class FieldService {
 	 * @return the field ready to persist.
 	 */
 	private FieldEntity convertDTOFieldToEntity(Field field) {
-
+		logger.debug("convertDTOFieldToEntity");
+		
 		if (field == null) {
 			throw new FieldNotFoundException("Invalid field JSON data. Field is null.");
 		}
@@ -176,12 +198,17 @@ public class FieldService {
 
 		FieldEntity fieldEntity = converter.convertJSONToFieldEntity(field);
 		BoundaryEntity boundary = converter.convertJSONToBoundaryEntity(field.getBounderies());
-		List<CoordinateEntity> coodinates = converter.convertJSONToCoordinateEntity(field.getBounderies());
+		List<CoordinateEntity> coordinates = converter.convertJSONToCoordinateEntity(field.getBounderies());
+		if(coordinates.size() < MINIMAL_NUMBER_VALID_COORDINATES) {
+			throw new FieldException("Field " + field.getId() 
+				+ " has insuficient number of coordinates: " + coordinates.size() 
+				+ " Minimal: " + MINIMAL_NUMBER_VALID_COORDINATES);
+		}
 
 		fieldEntity.setBoundary(boundary);
 		boundary.setField(fieldEntity); // because of cascade configuration in the entities
 
-		boundary.setCoordinates(coodinates);
+		boundary.setCoordinates(coordinates);
 		return fieldEntity;
 	}
 }

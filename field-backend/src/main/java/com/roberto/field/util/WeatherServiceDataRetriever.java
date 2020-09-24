@@ -43,12 +43,11 @@ public class WeatherServiceDataRetriever {
 	 * @return
 	 */
 	public PolygonDataResponse doCreatePolygon(PolygonDataRequest polygonReq) {
+		logger.info("doCreatePolygon");
+		logger.debug("Polygon request name: " + polygonReq.getName());
 		
-		String url = polygonAPIURL + "?" + "appid=";
-		logger.info(url);
-		logger.info("doCreatePolygon - Polygon request name: " + polygonReq.getName());
-
-		url = url + appId;
+		String url = polygonAPIURL + "?" + "appid=" + appId;
+		logger.debug(url);
 
 		try { 
 			WebClient webClient = WebClient.builder().baseUrl(url).build();
@@ -62,7 +61,7 @@ public class WeatherServiceDataRetriever {
 					.bodyToFlux(PolygonDataResponse.class)
 					.blockFirst();
 	
-			logger.info("Polygon created id: " + response.getId());
+			logger.debug("Polygon created id: " + response.getId());
 			return response;
 		} catch (Exception ex) {
 			throw new FieldAPIException(
@@ -76,6 +75,8 @@ public class WeatherServiceDataRetriever {
 	 * @return
 	 */
 	public List<HistoricalWeatherData> doRetrieveHistoricalWeather(String polygonId) {
+		logger.info("doRetrieveHistoricalWeather");
+		logger.debug("polygonId: " + polygonId);
 		
 		String url = historicalWeatherAPIURL
 						.concat("?appid=").concat(appId)
@@ -83,7 +84,6 @@ public class WeatherServiceDataRetriever {
 						.concat("&start=").concat(DateUtil.getNow())
 						.concat("&end=").concat(DateUtil.getSevenDaysBehind());
 		
-		logger.info("doRetrieveHistoricalWeather - polygonId: " + polygonId);
 
 		try {
 			List<HistoricalWeatherData> list = WebClient.create(url)

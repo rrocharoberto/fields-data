@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.roberto.field.controller.support.FieldException;
 
 /**
@@ -15,10 +18,14 @@ import com.roberto.field.controller.support.FieldException;
  */
 public class DateUtil {
 
+	private static Logger logger = LoggerFactory.getLogger(DateUtil.class);
+	
 	// Example: "2020-07-25T10:03:56.782Z"
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
 
 	public static String convertDateToString(Date date) {
+		logger.debug("convertDateToString: " + date);
+		
 		if (date == null) {
 			return "";
 		}
@@ -26,7 +33,8 @@ public class DateUtil {
 	}
 
 	public static Date convertStringToDate(String dateSource) {
-		System.out.println("Converting date: " + dateSource);
+		logger.debug("convertStringToDate: " + dateSource);
+
 		if (dateSource == null || dateSource.trim().isEmpty()) {
 			return null;
 		}

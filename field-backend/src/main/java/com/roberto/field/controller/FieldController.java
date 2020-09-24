@@ -2,6 +2,8 @@ package com.roberto.field.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.roberto.field.controller.support.FieldErrorMessage;
 import com.roberto.field.controller.support.FieldException;
 import com.roberto.field.controller.support.FieldNotFoundException;
+import com.roberto.field.controller.support.GeneralExceptionHandler;
 import com.roberto.field.dto.Field;
 import com.roberto.field.dto.heatherHistory.WeatherHistory;
 import com.roberto.field.service.FieldService;
@@ -40,6 +43,8 @@ import com.roberto.field.service.WeatherService;
 @RestController
 @RequestMapping(name = "/")
 public class FieldController {
+
+	private Logger logger = LoggerFactory.getLogger(FieldController.class);
 
 	@Autowired
 	private FieldService service;
@@ -87,7 +92,8 @@ public class FieldController {
 	 */
 	@ExceptionHandler
 	public ResponseEntity<FieldErrorMessage> handleException(FieldException ex) {
-
+		logger.info("handleException", ex);
+		
 		FieldErrorMessage error = new FieldErrorMessage(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 
 		return new ResponseEntity<FieldErrorMessage>(error, HttpStatus.BAD_REQUEST);
@@ -102,7 +108,8 @@ public class FieldController {
 	 */
 	@ExceptionHandler
 	public ResponseEntity<FieldErrorMessage> handleException(FieldNotFoundException ex) {
-
+		logger.info("handleException", ex);
+		
 		FieldErrorMessage error = new FieldErrorMessage(HttpStatus.NOT_FOUND.value(), ex.getMessage());
 
 		return new ResponseEntity<FieldErrorMessage>(error, HttpStatus.NOT_FOUND);

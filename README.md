@@ -259,6 +259,7 @@ For a basic test report, execute the command bellow (inside `field-backend` dire
 
 	5.10) In `FieldEntity`, attribute `created` is set only when field is persisted to database and `updated` is set every time update (PUT) is performed.
 
+	5.11) When updating a field, it keeps the same `polygonId` (of a polygon already created in the past).
 
 
 6) Regards to Java project (Historical Weather API):
@@ -283,8 +284,9 @@ For a basic test report, execute the command bellow (inside `field-backend` dire
 
 	6.10) New field `polygon_id` in table `Boundary` to save id of the polygon created in OpenWeather API. Avoid creating new polygon when it is already there. The OpenWeather API keeps the polygons. When there is a request, the code checks if it is necessary create a new polygon.
 
-	6.11) Special note of [polygon API](from https://agromonitoring.com/api/polygons): "When creating a polygon, the first and last positions are equivalent, and they MUST contain identical values" (example of incorrect API call).
- 
+	6.11) Special note of [polygon API](from https://agromonitoring.com/api/polygons): "When creating a polygon, the first and last positions are equivalent, and they MUST contain identical values" (example of incorrect API call). The code checks if the first has the same value as the last element, if not, add the first at the end of the list.
+
+	6.12) The `updated` field of `Boundary` table is not changed when Weather API creates a polygon in Agro Monitoring API. It is updated only when the Rest client updates the field.
 
 
 7) Regards to Docker environment

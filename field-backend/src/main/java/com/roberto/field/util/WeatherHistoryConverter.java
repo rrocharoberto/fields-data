@@ -2,12 +2,18 @@ package com.roberto.field.util;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.roberto.field.dto.heatherHistory.HistoricalWeatherData;
 import com.roberto.field.dto.heatherHistory.WeatherData;
 import com.roberto.field.dto.heatherHistory.WeatherHistory;
+import com.roberto.field.service.WeatherService;
 
 public class WeatherHistoryConverter {
 
+	private Logger logger = LoggerFactory.getLogger(WeatherService.class);
+	
 	public WeatherHistoryConverter() {
 	}
 
@@ -17,7 +23,8 @@ public class WeatherHistoryConverter {
 	 * @return
 	 */
 	public WeatherHistory convertHistoricalWeatherToJSON(List<HistoricalWeatherData> historicalWeather) {
-
+		logger.debug("convertHistoricalWeatherToJSON");
+		
 		WeatherData[] weatherDataArray = new WeatherData[historicalWeather.size()];
 
 		for (int i = 0; i < weatherDataArray.length; i++) {

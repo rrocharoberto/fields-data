@@ -56,6 +56,8 @@ public class WeatherService {
 	 * @return
 	 */
 	public WeatherHistory retrieveWeatherHistory(String fieldId) {
+		logger.info("retrieveWeatherHistory");
+		
 		if(fieldId == null) {
 			throw new FieldException("Field can not null.");
 		}
@@ -81,26 +83,36 @@ public class WeatherService {
 	}
 
 	private String createAndSavePolygon(FieldEntity fieldEntity) {
+		logger.info("createAndSavePolygon");
+		
 		//add the first coordinate at the end of coordinates: API constraint: 
 		//"When creating a polygon, the first and last positions are equivalent, and they MUST contain identical values"
+		//The example challenge data has already have the first and last elements with the same value.
 		
 		List<CoordinateEntity> coordinates = fieldEntity.getBoundary().getCoordinates();
-		List<CoordinateEntity> newList = new ArrayList<CoordinateEntity>();
-		newList.addAll(coordinates);
-		if(!coordinates.isEmpty()) {
-			newList.add(coordinates.get(0));
+		List<CoordinateEntity> newList = new ArrayList<CoordinateEntity>(coordinates);
+
+		logger.debug("createAndSavePolygon - amount of coordinates: " + coordinates.size());
+		//check if the first has the same value as the last element, if not, add the first at the end of the list
+		CoordinateEntity first = coordinates.get(0);
+		CoordinateEntity last = coordinates.get(coordinates.size() - 1);
+		
+		boolean hasSameValues = first.getLatitude().equals(last.getLatitude()) && first.getLogitude().equals(last.getLogitude());
+		logger.debug("createAndSavePolygon - coordinates hasSameValues: " + hasSameValues);
+		if(!hasSameValues) {
+			newList.add(first);
 		}
 		GeoData geoJson = fieldConverter.convertCoordinateEntityToJSON(newList);
 		
 		// create polygon request
 		PolygonDataRequest polygonReq = new PolygonDataRequest(fieldEntity.getId(), geoJson); // using the fieldId as name of polygon
 		
-		logger.info("createAndSavePolygon - polygonReq: " + polygonReq.getName());
+		logger.debug("createAndSavePolygon - polygonReq: " + polygonReq.getName());
 		PolygonDataResponse polygonResponse = weatherDataRetriever.doCreatePolygon(polygonReq);
 		if(polygonResponse == null) {
 			throw new FieldException("No Polygon data received from external API. Field: " + fieldEntity.getId());
 		}
-		logger.info("createAndSavePolygon - polygonResponse: " + polygonResponse.getId());
+		logger.debug("createAndSavePolygon - polygonResponse: " + polygonResponse.getId());
 
 		//save the polygon id for future requests
 		fieldEntity.getBoundary().setPolygonId(polygonResponse.getId());
