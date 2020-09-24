@@ -170,6 +170,9 @@ Run the `main` method of the class `com.roberto.field.FieldBackendApplication`
 
 # Accessing the services
 
+Before access the services, you should check the [Field API documentation](http://localhost:8080/field-backend/swagger-ui.html) to see more details of the API.
+
+
 The following GET requests can be made using a web browser or a `curl` command:
 
 - `http://localhost:8080/fields`
@@ -278,7 +281,7 @@ For a basic test report, execute the command bellow (inside `field-backend` dire
 
 	6.9) Catching exceptions when retrieving data from OpenWeather API and handling it as `FieldAPIException` (for bad gateway HTTP response).
 
-	6.10) New field `polygon_idd` in table `Boundary` to save id of the polygon created in OpenWeather API. Avoid creating new polygon when it already there. The OpenWeather API keeps the polygons.
+	6.10) New field `polygon_id` in table `Boundary` to save id of the polygon created in OpenWeather API. Avoid creating new polygon when it is already there. The OpenWeather API keeps the polygons. When there is a request, the code checks if it is necessary create a new polygon.
 
 	6.11) Special note of [polygon API](from https://agromonitoring.com/api/polygons): "When creating a polygon, the first and last positions are equivalent, and they MUST contain identical values" (example of incorrect API call).
  
