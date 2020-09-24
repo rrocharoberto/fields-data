@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,8 @@ import com.roberto.field.util.WeatherServiceDataRetriever;
  */
 @Service
 public class WeatherService {
+
+	private Logger logger = LoggerFactory.getLogger(WeatherService.class);
 
 	@Autowired
 	public FieldDAO dao;
@@ -91,10 +95,12 @@ public class WeatherService {
 		// create polygon request
 		PolygonDataRequest polygonReq = new PolygonDataRequest(fieldEntity.getId(), geoJson); // using the fieldId as name of polygon
 		
+		logger.info("createAndSavePolygon - polygonReq: " + polygonReq.getName());
 		PolygonDataResponse polygonResponse = weatherDataRetriever.doCreatePolygon(polygonReq);
 		if(polygonResponse == null) {
 			throw new FieldException("No Polygon data received from external API. Field: " + fieldEntity.getId());
 		}
+		logger.info("createAndSavePolygon - polygonResponse: " + polygonResponse.getId());
 
 		//save the polygon id for future requests
 		fieldEntity.getBoundary().setPolygonId(polygonResponse.getId());

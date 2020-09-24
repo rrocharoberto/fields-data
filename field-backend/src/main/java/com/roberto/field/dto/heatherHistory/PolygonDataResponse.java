@@ -11,7 +11,6 @@ public class PolygonDataResponse {
 	private String id;
 	private String name;
 	private float[] center;
-
 	private float area;
 	private String user_id;
 

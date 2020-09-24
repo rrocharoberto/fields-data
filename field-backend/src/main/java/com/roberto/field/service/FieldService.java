@@ -104,6 +104,8 @@ public class FieldService {
 		}
 		dao.deleteCoodinatesOfBoundary(fieldEntity.getBoundary().getId()); // cleans up the coordinates of current
 																			// boundary
+		fieldEntity.getBoundary().setCreated(existingField.get().getBoundary().getCreated());
+		fieldEntity.setCreated(existingField.get().getCreated());
 		fieldEntity.setUpdated(new Date()); //set every time update is performed
 		fieldEntity.getBoundary().setUpdated(new Date());
 		dao.save(fieldEntity);

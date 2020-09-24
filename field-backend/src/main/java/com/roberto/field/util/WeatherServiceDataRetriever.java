@@ -15,14 +15,13 @@ import com.roberto.field.controller.support.FieldAPIException;
 import com.roberto.field.dto.heatherHistory.HistoricalWeatherData;
 import com.roberto.field.dto.heatherHistory.PolygonDataRequest;
 import com.roberto.field.dto.heatherHistory.PolygonDataResponse;
-import com.roberto.field.service.WeatherService;
 
 import reactor.core.publisher.Mono;
 
 @Service
 public class WeatherServiceDataRetriever {
 
-	private Logger logger = LoggerFactory.getLogger(WeatherService.class);
+	private Logger logger = LoggerFactory.getLogger(WeatherServiceDataRetriever.class);
 	
 	private String polygonAPIURL;
 	private String historicalWeatherAPIURL;
@@ -45,8 +44,11 @@ public class WeatherServiceDataRetriever {
 	 */
 	public PolygonDataResponse doCreatePolygon(PolygonDataRequest polygonReq) {
 		
-		String url = polygonAPIURL + "?" + "appid=" + appId;
+		String url = polygonAPIURL + "?" + "appid=";
 		logger.info(url);
+		logger.info("doCreatePolygon - Polygon request name: " + polygonReq.getName());
+
+		url = url + appId;
 
 		try { 
 			WebClient webClient = WebClient.builder().baseUrl(url).build();
@@ -60,7 +62,7 @@ public class WeatherServiceDataRetriever {
 					.bodyToFlux(PolygonDataResponse.class)
 					.blockFirst();
 	
-			logger.info("Polygon created id: ", response.getId());
+			logger.info("Polygon created id: " + response.getId());
 			return response;
 		} catch (Exception ex) {
 			throw new FieldAPIException(
@@ -81,7 +83,7 @@ public class WeatherServiceDataRetriever {
 						.concat("&start=").concat(DateUtil.getNow())
 						.concat("&end=").concat(DateUtil.getSevenDaysBehind());
 		
-		logger.info(url);
+		logger.info("doRetrieveHistoricalWeather - polygonId: " + polygonId);
 
 		try {
 			List<HistoricalWeatherData> list = WebClient.create(url)
